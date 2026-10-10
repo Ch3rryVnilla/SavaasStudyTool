@@ -1,4863 +1,720 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Messaging Website</title>
-
-  <style>
-    * {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #08090d;
-  color: white;
-}
-
-/* =========================
-   LOGIN SCREEN
-   ========================= */
-
-#auth {
-  min-height: 100vh;
-  max-width: 500px;
-  margin: auto;
-  padding: 80px 20px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-#auth h1 {
-  text-align: center;
-  margin-bottom: 35px;
-  font-size: 30px;
-  letter-spacing: 1px;
-
-  text-shadow:
-    0 0 10px rgba(88, 101, 242, 0.6);
-}
-
-#auth input {
-  width: 100%;
-  padding: 15px;
-  margin: 7px 0;
-
-  border: 1px solid #292d3a;
-  outline: none;
-  border-radius: 10px;
-
-  background: #15171f;
-  color: white;
-
-  font-size: 15px;
-
-  transition: 0.2s;
-}
-
-#auth input:focus {
-  border-color: #5865f2;
-
-  box-shadow:
-    0 0 0 2px rgba(88, 101, 242, 0.2),
-    0 0 15px rgba(88, 101, 242, 0.15);
-}
-
-#auth button {
-  padding: 12px 22px;
-  margin: 12px 4px;
-
-  border: none;
-  border-radius: 20px;
-
-  background: #5865f2;
-  color: white;
-
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-
-  transition: 0.2s;
-}
-
-#auth button:hover {
-  background: #4752c4;
-  transform: translateY(-2px);
-}
-
-#status {
-  text-align: center;
-  color: #aaa;
-  min-height: 20px;
-  margin-top: 15px;
-}
-
-/* =========================
-   CHAT
-   ========================= */
-
-#chat {
-  width: 100%;
-  height: 100vh;
-
-  display: none;
-  flex-direction: column;
-
-  background:
-    radial-gradient(
-      circle at 15% 10%,
-      rgba(88, 101, 242, 0.15),
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 85% 90%,
-      rgba(120, 50, 150, 0.10),
-      transparent 30%
-    ),
-    #08090d;
-}
-
-/* =========================
-   HEADER
-   ========================= */
-
-.chat-header {
-  height: 72px;
-  min-height: 72px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-  padding: 0 20px;
-
-  background: rgba(13, 15, 21, 0.96);
-
-  border-bottom: 1px solid #292d3a;
-
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.35);
-
-  backdrop-filter: blur(10px);
-}
-
-.server-icon {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-
-  border-radius: 13px;
-
-  background: #5865f2;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-weight: bold;
-  font-size: 18px;
-
-  box-shadow:
-    0 0 15px rgba(88, 101, 242, 0.35);
-}
-
-.chat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-title {
-  font-size: 17px;
-  font-weight: bold;
-}
-
-.chat-status {
-  font-size: 12px;
-  color: #57f287;
-  margin-top: 3px;
-}
-
-/* =========================
-   PROFILE PICTURE
-   ========================= */
-
-.profile-setup {
-  margin-left: auto;
-
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.profile-setup input {
-  max-width: 160px;
-
-  color: #8f96a3;
-  font-size: 11px;
-}
-
-.profile-setup button {
-  width: 38px;
-  height: 38px;
-
-  border: none;
-  border-radius: 50%;
-
-  background: #252936;
-  color: white;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.profile-setup button:hover {
-  background: #5865f2;
-  transform: scale(1.08);
-}
-
-/* =========================
-   LOGOUT
-   ========================= */
-
-.logout-button {
-  padding: 9px 14px;
-
-  border: none;
-  border-radius: 18px;
-
-  background: #252936;
-  color: #b5bac1;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.logout-button:hover {
-  background: #ed4245;
-  color: white;
-  transform: translateY(-1px);
-}
-
-/* =========================
-   MESSAGES
-   ========================= */
-
-#messages {
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-
-  padding: 25px;
-
-  overflow-y: auto;
-
-  scroll-behavior: smooth;
-}
-
-.message-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-
-  max-width: 80%;
-
-  animation: messageAppear 0.2s ease;
-}
-
-@keyframes messageAppear {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.message-row.mine {
-  align-self: flex-end;
-  flex-direction: row-reverse;
-}
-
-/* =========================
-   AVATAR
-   ========================= */
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-
-  border-radius: 50%;
-
-  background: #5865f2;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-weight: bold;
-  font-size: 14px;
-
-  position: relative;
-
-  overflow: hidden;
-
-  border: 2px solid #303442;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-
-  border-radius: 50%;
-
-  object-fit: cover;
-}
-
-.avatar::after {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  border-radius: 50%;
-
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.08);
-
-  pointer-events: none;
-}
-
-/* =========================
-   MESSAGE CONTENT
-   ========================= */
-
-.message-content {
-  display: flex;
-  flex-direction: column;
-
-  min-width: 0;
-}
-
-.message-row.mine .message-content {
-  align-items: flex-end;
-}
-
-.message-username {
-  font-size: 12px;
-
-  color: #aeb4c0;
-
-  margin: 0 0 5px 8px;
-
-  font-weight: bold;
-}
-
-/* =========================
-   MESSAGE BUBBLE
-   ========================= */
-
-.message {
-  max-width: 100%;
-
-  padding: 11px 15px;
-
-  border-radius: 17px;
-
-  background: #1b1e27;
-
-  color: #f2f3f5;
-
-  word-wrap: break-word;
-
-  border: 1px solid #292d3a;
-
-  box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.25);
-
-  transition: 0.2s;
-}
-
-.message:hover {
-  border-color: #3a3f50;
-}
-
-.message-row.mine .message {
-  background: #5865f2;
-
-  color: white;
-
-  border: none;
-
-  border-bottom-right-radius: 5px;
-
-  box-shadow:
-    0 3px 12px rgba(88, 101, 242, 0.2);
-}
-
-.message-row:not(.mine) .message {
-  border-bottom-left-radius: 5px;
-}
-
-.message-text {
-  font-size: 15px;
-  line-height: 1.45;
-}
-
-.message-time {
-  font-size: 10px;
-
-  color: #747b89;
-
-  margin-top: 5px;
-
-  padding: 0 4px;
-}
-
-/* =========================
-   EDIT BUTTON
-   ========================= */
-
-.edit-button {
-  margin-top: 5px;
-
-  border: none;
-  background: transparent;
-
-  color: #747b89;
-
-  font-size: 10px;
-
-  cursor: pointer;
-
-  padding: 2px 5px;
-
-  transition: 0.2s;
-}
-
-.edit-button:hover {
-  color: #5865f2;
-}
-    .message-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.edit-button,
-.delete-button {
-  border: none;
-  background: transparent;
-  font-size: 10px;
-  cursor: pointer;
-  padding: 2px 5px;
-  transition: 0.2s;
-}
-
-.edit-button {
-  color: #747b89;
-}
-
-.edit-button:hover {
-  color: #5865f2;
-}
-
-.delete-button {
-  color: #747b89;
-}
-
-.delete-button:hover {
-  color: #ed4245;
-}
-
-/* =========================
-   READ RECEIPTS
-   ========================= */
-
-.read-receipt {
-  font-size: 10px;
-
-  margin-top: 3px;
-
-  color: #8f96a3;
-}
-
-/* =========================
-   EDITED LABEL
-   ========================= */
-
-.edited-label {
-  font-size: 10px;
-
-  color: #8f96a3;
-
-  margin-left: 4px;
-
-  font-style: italic;
-}
-
-/* =========================
-   TYPING INDICATOR
-   ========================= */
-
-#typingIndicator {
-  min-height: 22px;
-
-  padding: 0 25px 7px;
-
-  font-size: 12px;
-
-  color: #8f96a3;
-
-  font-style: italic;
-}
-
-/* =========================
-   MESSAGE INPUT
-   ========================= */
-
-.send-area {
-  display: flex;
-
-  gap: 10px;
-
-  padding: 15px 20px;
-
-  background: #0d0f15;
-
-  border-top: 1px solid #292d3a;
-}
-
-#messageInput {
-  flex: 1;
-
-  height: 48px;
-
-  padding: 0 18px;
-
-  border: 1px solid #292d3a;
-
-  outline: none;
-
-  border-radius: 24px;
-
-  background: #171a22;
-
-  color: white;
-
-  font-size: 15px;
-
-  transition: 0.2s;
-}
-
-#messageInput::placeholder {
-  color: #6f7582;
-}
-
-#messageInput:focus {
-  border-color: #5865f2;
-
-  box-shadow:
-    0 0 0 2px rgba(88, 101, 242, 0.15);
-}
-
-.send-area button {
-  width: 48px;
-  height: 48px;
-
-  border: none;
-  border-radius: 50%;
-
-  background: #5865f2;
-
-  color: white;
-
-  font-size: 20px;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.send-area button:hover {
-  background: #4752c4;
-
-  transform: scale(1.08);
-
-  box-shadow:
-    0 0 15px rgba(88, 101, 242, 0.35);
-}
-
-.send-area button:active {
-  transform: scale(0.95);
-}
-
-/* =========================
-   SCROLLBAR
-   ========================= */
-
-#messages::-webkit-scrollbar {
-  width: 7px;
-}
-
-#messages::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-#messages::-webkit-scrollbar-thumb {
-  background: #303442;
-
-  border-radius: 10px;
-}
-
-#messages::-webkit-scrollbar-thumb:hover {
-  background: #454b5c;
-}
-    
-/* =========================
-   PROFILE PANEL
-   ========================= */
-
-.profile-button {
-  padding: 9px 14px;
-  border: none;
-  border-radius: 18px;
-  background: #252936;
-  color: #b5bac1;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.profile-button:hover {
-  background: #5865f2;
-  color: white;
-  transform: translateY(-1px);
-}
-
-.profile-panel {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(6px);
-}
-
-.profile-box {
-  width: min(400px, 90%);
-  padding: 25px;
-
-  background: #15171f;
-  border: 1px solid #292d3a;
-  border-radius: 18px;
-
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-}
-
-.profile-box h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-
-.profile-box input,
-.profile-box textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-
-  border: 1px solid #292d3a;
-  border-radius: 10px;
-
-  background: #0d0f15;
-  color: white;
-
-  outline: none;
-  font-family: Arial, sans-serif;
-}
-
-.profile-box textarea {
-  height: 90px;
-  resize: none;
-}
-
-.profile-box input:focus,
-.profile-box textarea:focus {
-  border-color: #5865f2;
-}
-
-.profile-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.profile-buttons button {
-  flex: 1;
-  padding: 10px;
-
-  border: none;
-  border-radius: 10px;
-
-  background: #5865f2;
-  color: white;
-
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.profile-buttons button:last-child {
-  background: #252936;
-}
-
-#profileStatus {
-  text-align: center;
-  color: #8f96a3;
-  font-size: 12px;
-  min-height: 15px;
-}
-    
-/* =========================
-   MOBILE
-   ========================= */
-
-@media (max-width: 600px) {
-
-  #auth {
-    padding: 40px 18px;
-  }
-
-  #auth h1 {
-    font-size: 25px;
-  }
-
-  #messages {
-    padding: 14px;
-    gap: 12px;
-  }
-
-  .message-row {
-    max-width: 90%;
-  }
-
-  .chat-header {
-    padding: 0 10px;
-  }
-
-  .server-icon {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-  }
-
-  .chat-title {
-    font-size: 15px;
-  }
-
-  .profile-setup input {
-    display: none;
-  }
-
-  .logout-button {
-    padding: 8px 10px;
-    font-size: 11px;
-  }
-
-  .send-area {
-    padding: 10px;
-  }
-
-  #messageInput {
-    height: 44px;
-  }
-
-  .send-area button {
-    width: 44px;
-    height: 44px;
-  }
-}
-    .message-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.edit-button,
-.delete-button {
-  border: none;
-  background: transparent;
-  font-size: 10px;
-  cursor: pointer;
-  padding: 2px 5px;
-  transition: 0.2s;
-}
-
-.edit-button {
-  color: #747b89;
-}
-
-.edit-button:hover {
-  color: #5865f2;
-}
-
-.delete-button {
-  color: #747b89;
-}
-
-.delete-button:hover {
-  color: #ed4245;
-}
-    .reaction-bar {
-  display: flex;
-  gap: 4px;
-  margin-top: 6px;
-}
-
-.reaction-button {
-  background: #2b2d31;
-  border: 1px solid #40444b;
-  border-radius: 8px;
-  padding: 4px 7px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: 0.15s;
-}
-
-.reaction-button:hover {
-  transform: scale(1.15);
-  background: #40444b;
-}
-    .reaction-button.my-reaction {
-  background: #5865f2;
-  border-color: #7289da;
-}
-    .message-image {
-  display: block;
-  max-width: 280px;
-  max-height: 350px;
-  width: auto;
-  height: auto;
-  border-radius: 12px;
-  margin-top: 8px;
-  cursor: pointer;
-}
-    .image-preview {
-  position: relative;
-  display: inline-block;
-  margin: 10px;
-  padding: 6px;
-  background: #1e1f22;
-  border: 1px solid #40444b;
-  border-radius: 12px;
-}
-
-.image-preview img {
-  display: block;
-  max-width: 220px;
-  max-height: 180px;
-  border-radius: 8px;
-}
-
-.remove-preview {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 25px;
-  height: 25px;
-  border: none;
-  border-radius: 50%;
-  background: #ed4245;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-}
-    .replied-message {
-  background: #2b2d31;
-  border-left: 3px solid #5865f2;
-  padding: 6px 9px;
-  margin-bottom: 7px;
-  border-radius: 6px;
-  font-size: 12px;
-  opacity: 0.85;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-    
-    .private-user-button {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  margin-bottom: 6px;
-
-  background: #2b2d31;
-  color: white;
-
-  border: 1px solid #40444b;
-  border-radius: 8px;
-
-  cursor: pointer;
-  text-align: left;
-
-  transition: 0.15s;
-}
-
-.private-user-button:hover {
-  background: #40444b;
-}
-
-.private-user-avatar {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 50%;
-  object-fit: cover;
-
-  background: #1e1f22;
-}
-
-.private-user-button span {
-  font-size: 15px;
-  font-weight: 600;
-}
-    #privateMessages {
-  height: 350px;
-  overflow-y: auto;
-  padding: 10px;
-  margin-top: 10px;
-  background: #1e1f22;
-  border-radius: 8px;
-}
-
-.private-chat-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.private-chat-header button {
-  background: #2b2d31;
-  color: white;
-  border: 1px solid #40444b;
-  border-radius: 6px;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-.private-chat-header span {
-  font-weight: bold;
-}
-
-.private-message {
-  width: fit-content;
-  max-width: 75%;
-  background: #2b2d31;
-  color: white;
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  border-radius: 10px;
-}
-
-.private-message.mine {
-  margin-left: auto;
-  background: #5865f2;
-}
-
-.private-send-area {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.private-send-area input {
-  flex: 1;
-  padding: 10px;
-  background: #1e1f22;
-  color: white;
-  border: 1px solid #40444b;
-  border-radius: 8px;
-}
-
-.private-send-area button {
-  padding: 10px 14px;
-  background: #5865f2;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-    .private-read-receipt {
-  text-align: right;
-  font-size: 11px;
-  opacity: 0.65;
-  margin-top: -4px;
-  margin-bottom: 5px;
-}
-
-    .private-delete-button {
-  margin-left: 8px;
-  padding: 3px 6px;
-  background: transparent;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-.private-delete-button:hover {
-  background: #40444b;
-  opacity: 1;
-}
-
-    .private-call-buttons {
-  display: flex;
-  gap: 6px;
-  margin-left: auto;
-}
-
-.private-call-buttons button {
-  background: #2b2d31;
-  color: white;
-  border: 1px solid #40444b;
-  border-radius: 6px;
-  padding: 6px 9px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.private-call-buttons button:hover {
-  background: #40444b;
-}
-    .call-panel {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.call-box {
-  width: min(900px, 95vw);
-  background: #1e1f22;
-  border: 1px solid #40444b;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-}
-
-.call-box h2 {
-  margin-top: 0;
-  color: white;
-}
-
-#remoteVideo {
-  width: 100%;
-  max-height: 60vh;
-  background: #000;
-  border-radius: 10px;
-  object-fit: contain;
-}
-
-#localVideo {
-  width: 180px;
-  height: 130px;
-  background: #000;
-  border-radius: 10px;
-  object-fit: cover;
-  position: absolute;
-  right: 30px;
-  bottom: 100px;
-  border: 2px solid white;
-}
-
-.call-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.call-controls button {
-  padding: 10px 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #2b2d31;
-  color: white;
-}
-
-.end-call-button {
-  background: #d83c3e !important;
-}
-    /* ==============================
-   NIGHTWIRE VISUAL POLISH
-   ============================== */
-
-/* Profile picture upload area */
-.profile-setup {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.profile-setup input[type="file"] {
-  max-width: 145px;
-  padding: 7px;
-  background: #181a20;
-  color: #aeb4c0;
-  border: 1px solid #30343d;
-  border-radius: 8px;
-  font-size: 12px;
-}
-
-.profile-setup input[type="file"]::file-selector-button {
-  background: #5865f2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 9px;
-  margin-right: 6px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.profile-setup input[type="file"]::file-selector-button:hover {
-  background: #4752c4;
-}
-
-/* Camera/upload button */
-.profile-setup button {
-  width: 42px;
-  height: 42px;
-  border: none;
-  border-radius: 50%;
-  background: #5865f2;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  transition: transform 0.15s, background 0.15s;
-}
-
-.profile-setup button:hover {
-  background: #4752c4;
-  transform: scale(1.06);
-}
-
-/* Top navigation buttons */
-.profile-button {
-  border: 1px solid #30343d;
-  background: #20232b;
-  color: #e8eaf0;
-  border-radius: 22px;
-  padding: 9px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.15s, border-color 0.15s;
-}
-
-.profile-button:hover {
-  background: #2c303a;
-  border-color: #5865f2;
-  transform: translateY(-1px);
-}
-
-/* Profile window */
-.profile-panel {
-  backdrop-filter: blur(8px);
-}
-
-.profile-box {
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.55),
-    0 0 30px rgba(88, 101, 242, 0.08);
-}
-
-/* Profile picture */
-#profileAvatar {
-  box-shadow:
-    0 0 0 3px #15171d,
-    0 0 0 5px #5865f2,
-    0 8px 25px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-#profileAvatar:hover {
-  transform: scale(1.04);
-}
-
-/* Inputs */
-input,
-textarea {
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: #5865f2 !important;
-  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.15);
-}
-
-/* Smoother scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #3b3f4a transparent;
-}
-
-*::-webkit-scrollbar {
-  width: 7px;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: #3b3f4a;
-  border-radius: 10px;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: #5865f2;
-}
-    /* =========================================
-   NIGHTWIRE — MAJOR VISUAL REDESIGN
-   ========================================= */
-
-/* Main page */
-body {
-  background:
-    radial-gradient(circle at 15% 20%, rgba(88, 101, 242, 0.10), transparent 30%),
-    radial-gradient(circle at 85% 80%, rgba(120, 70, 180, 0.08), transparent 30%),
-    #08090d !important;
-  color: #f2f3f5 !important;
-}
-
-/* Top navigation */
-header,
-.top-bar,
-.navbar {
-  background: rgba(13, 15, 22, 0.96) !important;
-  border-bottom: 1px solid rgba(88, 101, 242, 0.25) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35) !important;
-  backdrop-filter: blur(14px);
-}
-
-/* Make the main title stand out */
-h1,
-h2 {
-  letter-spacing: -0.5px;
-}
-
-/* Navigation buttons */
-.profile-button {
-  background: linear-gradient(
-    145deg,
-    #242735,
-    #191b25
-  ) !important;
-
-  border: 1px solid #343849 !important;
-  color: #e8e9ef !important;
-
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    inset 0 1px rgba(255, 255, 255, 0.04);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease !important;
-}
-
-.profile-button:hover {
-  transform: translateY(-2px) !important;
-
-  border-color: #5865f2 !important;
-
-  box-shadow:
-    0 7px 20px rgba(88, 101, 242, 0.22),
-    inset 0 1px rgba(255, 255, 255, 0.06);
-}
-
-/* Upload area */
-.profile-setup {
-  background: rgba(25, 27, 36, 0.75);
-  border: 1px solid #292d39;
-  border-radius: 14px;
-  padding: 5px 7px;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
-}
-
-.profile-setup input[type="file"] {
-  background: transparent !important;
-  color: #8f94a3 !important;
-  border: none !important;
-}
-
-/* Camera button */
-.profile-setup button {
-  width: 40px !important;
-  height: 40px !important;
-
-  border-radius: 12px !important;
-
-  background: linear-gradient(
-    145deg,
-    #6875ff,
-    #4e5be0
-  ) !important;
-
-  box-shadow:
-    0 5px 18px rgba(88, 101, 242, 0.28);
-
-  transition: transform 0.18s ease,
-              box-shadow 0.18s ease !important;
-}
-
-.profile-setup button:hover {
-  transform: translateY(-2px) scale(1.04) !important;
-
-  box-shadow:
-    0 8px 24px rgba(88, 101, 242, 0.4);
-}
-
-/* Message bubbles */
-.private-message,
-.message {
-  border: 1px solid rgba(255, 255, 255, 0.055);
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.20);
-}
-
-/* Your messages */
-.message.mine {
-  background: linear-gradient(
-    145deg,
-    #626fff,
-    #4d5be5
-  ) !important;
-
-  border-color: rgba(130, 140, 255, 0.35) !important;
-
-  box-shadow:
-    0 7px 22px rgba(68, 78, 190, 0.25) !important;
-}
-
-/* Other people's messages */
-.message:not(.mine) {
-  background: linear-gradient(
-    145deg,
-    #1d2029,
-    #171920
-  ) !important;
-
-  border-color: #292d38 !important;
-}
-
-/* Reaction buttons */
-button {
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-/* Reaction-looking buttons */
-.message button {
-  border-color: #343844;
-}
-
-/* Reply button */
-button[onclick*="startReply"] {
-  background: #181b23 !important;
-  color: #cfd2dc !important;
-  border: 1px solid #303440 !important;
-  border-radius: 8px !important;
-}
-
-button[onclick*="startReply"]:hover {
-  background: #252936 !important;
-  border-color: #5865f2 !important;
-}
-
-/* Message composer */
-#messageInput {
-  background: rgba(25, 28, 36, 0.95) !important;
-  border: 1px solid #303440 !important;
-  border-radius: 18px !important;
-
-  color: white !important;
-
-  box-shadow:
-    inset 0 1px 8px rgba(0, 0, 0, 0.25),
-    0 4px 20px rgba(0, 0, 0, 0.18);
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease !important;
-}
-
-#messageInput:focus {
-  border-color: #5865f2 !important;
-
-  box-shadow:
-    0 0 0 3px rgba(88, 101, 242, 0.12),
-    0 5px 25px rgba(0, 0, 0, 0.25) !important;
-}
-
-/* Send button */
-button[onclick*="sendMessage"] {
-  background: linear-gradient(
-    145deg,
-    #6875ff,
-    #4f5de5
-  ) !important;
-
-  border-radius: 16px !important;
-
-  box-shadow:
-    0 6px 20px rgba(88, 101, 242, 0.3) !important;
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease !important;
-}
-
-button[onclick*="sendMessage"]:hover {
-  transform: translateY(-2px) scale(1.03) !important;
-
-  box-shadow:
-    0 9px 28px rgba(88, 101, 242, 0.42) !important;
-}
-
-/* Profile modal */
-.profile-box {
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(88, 101, 242, 0.10),
-      transparent 35%
-    ),
-    #15171f !important;
-
-  border: 1px solid #303440 !important;
-
-  box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.65),
-    0 0 50px rgba(88, 101, 242, 0.08) !important;
-}
-
-/* Profile inputs */
-#profileUsername,
-#profileBio {
-  background: #0d0f14 !important;
-  border: 1px solid #303440 !important;
-  color: #f2f3f5 !important;
-}
-
-#profileUsername:focus,
-#profileBio:focus {
-  border-color: #5865f2 !important;
-  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.12) !important;
-}
-
-/* Profile picture */
-#profileAvatar {
-  border: 3px solid #5865f2 !important;
-
-  box-shadow:
-    0 0 0 5px rgba(88, 101, 242, 0.08),
-    0 10px 30px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Better scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #090a0e;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #292d39;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #5865f2;
-}
-  </style>
-</head>
-
-<body>
-
-  <!-- =========================
-       LOGIN / SIGN UP
-       ========================= -->
-
-  <div id="auth">
-
-    <h1>💬 My Messages</h1>
-
-    <input
-      id="email"
-      type="email"
-      placeholder="Email"
-      autocomplete="email"
-    >
-
-    <input
-      id="password"
-      type="password"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
-
-    <div style="text-align: center;">
-  <button onclick="signUp()">Sign Up</button>
-  <button onclick="logIn()">Log In</button>
-</div>
-
-<p id="status"></p>
-
-  </div>
-
-
-  <!-- =========================
-       CHAT
-       ========================= -->
-
-  <div id="chat">
-
-    <!-- Header -->
-<div class="chat-header">
-
-  <div class="server-icon">
-    M
-  </div>
-
-  <div class="chat-info">
-
-    <div class="chat-title">
-      Main Chat
-    </div>
-
-   <div id="onlineStatus" class="chat-status">
-  ● Online
-</div>
-    
-  </div>
-
-  <div class="profile-setup">
-    <input
-      id="avatarInput"
-      type="file"
-      accept="image/*"
-    >
-
-  <button type="button" onclick="uploadAvatar()">
-  📸
-</button>
-  </div>
-  
-<button
-  class="profile-button"
-  onclick="openProfile()"
->
-  👤 Profile
-</button>
-  <button
-  class="profile-button"
-  onclick="openPrivateChats()"
->
-  💬 Private
-</button>
-
-<button
-  class="logout-button"
-  onclick="logOut()"
->
-  Log Out
-</button>
-
-</div>
-    
-<div id="profilePanel" class="profile-panel">
-
-  <div class="profile-box">
-
-    <h2>👤 My Profile</h2>
-<img
-  id="profileAvatar"
-  src="https://via.placeholder.com/100"
-  alt="Profile picture"
-  style="
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    margin: 10px auto;
-    border: 3px solid #5865f2;
-  "
->
-    <input
-      id="profileUsername"
-      type="text"
-      placeholder="Username"
-      maxlength="30"
-    >
-
-    <textarea
-      id="profileBio"
-      placeholder="Write a little about yourself..."
-      maxlength="120"
-    ></textarea>
-
-    <div class="profile-buttons">
-
-      <button onclick="saveProfile()">
-        💾 Save
-      </button>
-
-      <button onclick="closeProfile()">
-        Cancel
-      </button>
-
-    </div>
-
-    <p id="profileStatus"></p>
-
-  </div>
-
-</div>
-
-    <!-- =========================
-     PRIVATE CHATS
-     ========================= -->
-
-<div
-  id="privateChatPanel"
-  class="profile-panel"
->
-
-  <div class="profile-box">
-
-    <h2>💬 Private Chats</h2>
-
-   <div id="privateUserList">
-
-  <div class="add-friend-section">
-    <h3>➕ Add Friends</h3>
-
-    <div id="allUserList">
-      Loading users...
-    </div>
-  </div>
-
-  <hr>
-
-  <div id="friendRequestsSection"></div>
-
-  <div id="friendsSection"></div>
-
-</div>
-
-<div
-  id="privateConversation"
-  style="display: none;"
->
-
-  <div class="private-chat-header">
-  <button onclick="backToPrivateUsers()">
-    ←
-  </button>
-
-  <span id="privateChatUsername">
-    Private Chat
-  </span>
-
-  <div class="private-call-buttons">
-    <button
-      type="button"
-      onclick="startVoiceCall()"
-      title="Voice call"
-    >
-      📞
-    </button>
-
-    <button
-      type="button"
-      onclick="startVideoCall()"
-      title="Video call"
-    >
-      📹
-    </button>
-  </div>
-</div>
-  <div id="privateMessages"></div>
-
-  <div class="private-send-area">
-
-    <input
-      id="privateMessageInput"
-      type="text"
-      placeholder="Message..."
-      autocomplete="off"
-    >
-
-    <button onclick="sendPrivateMessage()">
-      ➤
-    </button>
-
-  </div>
-
-</div>
-
-    <div class="profile-buttons">
-
-      <button onclick="closePrivateChats()">
-        Close
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-    
-<!-- Messages -->
-
-<div id="messages"></div>
-<div id="typingIndicator"></div>
-
-    <!-- Reply Preview -->
-
-<div
-  id="replyPreview"
-  class="reply-preview"
-  style="display: none;"
->
-  <div>
-    <strong id="replyUsername"></strong>
-    <div id="replyText"></div>
-  </div>
-
-  <button
-    type="button"
-    onclick="cancelReply()"
-  >
-    ✕
-  </button>
-</div>
-
-<!-- Message Input -->
-    
-    <div id="imagePreview" class="image-preview" style="display: none;">
-  <img id="previewImage" src="" alt="Image preview">
-
-  <button
-    type="button"
-    onclick="removeImagePreview()"
-    class="remove-preview"
-  >
-    ✕
-  </button>
-</div>
-
-<div class="send-area">
-
-  <input
-    id="messageInput"
-    type="text"
-    placeholder="Message #main-chat..."
-    autocomplete="off"
-  >
-
-  <input
-    id="imageInput"
-    type="file"
-    accept="image/*"
-    style="display: none;"
-  >
-
-  <button
-    onclick="document.getElementById('imageInput').click()"
-    class="image-button"
-  >
-    📷
-  </button>
-
-  <button onclick="sendMessage()">
-    ➤
-  </button>
-
-</div>
-
-</div>
-
-
-  <!-- =========================
-       SUPABASE
-       ========================= -->
-<script>
-window.addEventListener("error", function(event) {
-  const status = document.getElementById("status");
-
-  if (status) {
-    status.textContent =
-      "JavaScript error: " +
-      event.message;
-  }
-});
-</script>
-
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-
-    // ==============================
-    // SUPABASE INFORMATION
-    // ==============================
-const SUPABASE_URL =
-  "https://iwawfcnfgogfkognlcij.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_2r705Lr5VJaXL-R7XcQfFw_FH--UiIh";
-
-const supabaseClient =
-  window.supabase.createClient(
- SUPABASE_URL,
-  SUPABASE_KEY
-  );
-// ==============================
-// TYPING INDICATOR
-// ==============================
-
-const typingChannel =
-  supabaseClient.channel("main-chat-typing");
-
-let typingTimeout;
-
-typingChannel
-  .on(
-    "presence",
-    { event: "sync" },
-    () => {
-      updateTypingIndicator();
-    }
-  )
-  .subscribe(async (status) => {
-
-    if (status === "SUBSCRIBED") {
-
-      const {
-        data: { user }
-      } =
-        await supabaseClient.auth.getUser();
-
-      if (user) {
-
-        await typingChannel.track({
-          user_id: user.id,
-          username: user.email.split("@")[0],
-          typing: false
-        });
-
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NightWire Call</title>
+    <style>
+      :root {
+        --bg: #081120;
+        --bg-soft: #101b2c;
+        --panel: rgba(16, 27, 44, 0.9);
+        --panel-strong: #111f32;
+        --card: #0f1c2d;
+        --muted: #94a3b8;
+        --text: #edf6ff;
+        --primary: #5eead4;
+        --primary-strong: #34d399;
+        --secondary: #7c3aed;
+        --accent: #f59e0b;
+        --danger: #f87171;
+        --border: rgba(148, 163, 184, 0.2);
+        --shadow: 0 24px 65px rgba(1, 7, 18, 0.7);
       }
-    }
-  });
-    
-async function setTyping(isTyping) {
-  const {
-    data: { user }
-  } = await supabaseClient.auth.getUser();
 
-  if (!user) {
-    return;
-  }
+      * {
+        box-sizing: border-box;
+      }
 
-  if (lastTypingState === isTyping) {
-    return;
-  }
+      html {
+        scroll-behavior: smooth;
+      }
 
-  if (typingTimeout) {
-    clearTimeout(typingTimeout);
-  }
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(94, 234, 212, 0.14), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.14), transparent 35%),
+          var(--bg);
+        color: var(--text);
+      }
 
-  typingTimeout = setTimeout(async () => {
-    try {
-      await typingChannel.track({
-        user_id: user.id,
-        username: user.email.split("@")[0],
-        typing: isTyping
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .container {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(14px);
+        background: rgba(8, 17, 32, 0.72);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 78px;
+        gap: 20px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #03131a;
+        font-weight: 900;
+        box-shadow: 0 14px 28px rgba(94, 234, 212, 0.25);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 28px;
+        color: var(--muted);
+        font-size: 0.96rem;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn {
+        border: 0;
+        border-radius: 999px;
+        padding: 0.9rem 1.4rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+        color: #07141d;
+        box-shadow: 0 16px 32px rgba(52, 211, 153, 0.25);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .hero {
+        padding: 72px 0 28px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid rgba(94, 234, 212, 0.25);
+        background: rgba(94, 234, 212, 0.05);
+        color: var(--primary);
+        border-radius: 999px;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--primary);
+        box-shadow: 0 0 18px rgba(94, 234, 212, 0.8);
+      }
+
+      h1 {
+        font-size: clamp(2.8rem, 5vw, 5rem);
+        line-height: 0.96;
+        margin: 18px 0 18px;
+        letter-spacing: -0.06em;
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.7;
+        max-width: 600px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 26px;
+      }
+
+      .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 22px;
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .meta-row strong {
+        color: var(--text);
+      }
+
+      .call-panel {
+        background: linear-gradient(180deg, rgba(17, 28, 42, 0.95), rgba(9, 16, 28, 0.98));
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .call-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .call-header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+        color: white;
+      }
+
+      .call-title {
+        font-weight: 700;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 0.32rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #9ae6b4;
+        font-size: 0.76rem;
+      }
+
+      .status-pill::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 12px rgba(34, 197, 94, 0.7);
+      }
+
+      .preview {
+        padding: 22px 22px 10px;
+      }
+
+      .preview-card {
+        position: relative;
+        height: 430px;
+        border-radius: 22px;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.35)),
+          linear-gradient(135deg, rgba(124, 58, 237, 0.35), rgba(15, 118, 110, 0.35)),
+          #091827;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .preview-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 25% 15%, rgba(94, 234, 212, 0.28), transparent 18%),
+          radial-gradient(circle at 72% 28%, rgba(167, 139, 250, 0.42), transparent 20%),
+          linear-gradient(135deg, rgba(11, 10, 16, 0.6), rgba(18, 27, 41, 0.9));
+      }
+
+      .person {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 22px;
+        font-size: 4.5rem;
+        font-weight: 800;
+        color: rgba(255,255,255,0.95);
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+      }
+
+      .person.main {
+        width: 58%;
+        height: 72%;
+        left: 50%;
+        top: 15%;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, rgba(14, 165, 233, 0.3), rgba(15, 23, 42, 0.15));
+      }
+
+      .person.side {
+        right: 20px;
+        bottom: 20px;
+        width: 110px;
+        height: 130px;
+        font-size: 2.4rem;
+      }
+
+      .call-overlay {
+        position: absolute;
+        right: 18px;
+        top: 18px;
+        background: rgba(4, 9, 17, 0.68);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        color: white;
+        border-radius: 12px;
+        padding: 0.45rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .call-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 14px 20px 24px;
+      }
+
+      .control-btn {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      }
+
+      .control-btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .control-btn.active {
+        background: rgba(94, 234, 212, 0.16);
+        border-color: rgba(94, 234, 212, 0.5);
+      }
+
+      .control-btn.danger {
+        background: rgba(248, 113, 113, 0.18);
+        border-color: rgba(248, 113, 113, 0.5);
+      }
+
+      .features {
+        padding: 32px 0 20px;
+      }
+
+      .section-head {
+        max-width: 700px;
+        margin-bottom: 28px;
+      }
+
+      .section-head h2 {
+        font-size: clamp(2rem, 2.7vw, 3rem);
+        letter-spacing: -0.06em;
+        margin: 0 0 12px;
+      }
+
+      .section-head p {
+        color: var(--muted);
+        margin: 0;
+        line-height: 1.7;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .feature-card {
+        background: rgba(15, 27, 44, 0.82);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 22px;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+      }
+
+      .feature-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+        margin-bottom: 18px;
+        background: linear-gradient(135deg, rgba(94, 234, 212, 0.18), rgba(124, 58, 237, 0.18));
+        border: 1px solid rgba(94, 234, 212, 0.22);
+      }
+
+      .feature-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+      }
+
+      .feature-card p {
+        margin: 0;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .stats {
+        padding: 40px 0 24px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .stat-box {
+        border: 1px solid var(--border);
+        background: rgba(15, 27, 44, 0.8);
+        border-radius: 20px;
+        padding: 24px 20px;
+      }
+
+      .stat-box strong {
+        display: block;
+        font-size: clamp(1.8rem, 2vw, 2.6rem);
+        letter-spacing: -0.06em;
+      }
+
+      .stat-box span {
+        color: var(--muted);
+      }
+
+      .bottom-cta {
+        padding: 52px 0 90px;
+      }
+
+      .cta-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        border: 1px solid var(--border);
+        border-radius: 26px;
+        background: linear-gradient(135deg, rgba(94, 234, 212, 0.08), rgba(124, 58, 237, 0.08));
+        padding: 28px 30px;
+      }
+
+      .cta-box h3 {
+        margin: 0 0 6px;
+        font-size: clamp(1.7rem, 2vw, 2.4rem);
+        letter-spacing: -0.04em;
+      }
+
+      .cta-box p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .site-footer {
+        padding: 0 0 36px;
+        color: var(--muted);
+        border-top: 1px solid var(--border);
+      }
+
+      .footer-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-top: 20px;
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 920px) {
+        .hero-grid,
+        .feature-grid,
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .cta-box {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .nav {
+          min-height: 70px;
+        }
+
+        .nav-actions .btn-secondary {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 40px;
+        }
+
+        .call-controls {
+          gap: 8px;
+        }
+
+        .control-btn {
+          width: 46px;
+          height: 46px;
+        }
+
+        .preview-card {
+          height: 340px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a href="#" class="brand" aria-label="NightWire home">
+          <span class="brand-mark">N</span>
+          <span>NightWire</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#features">Features</a>
+          <a href="#solutions">Solutions</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#support">Support</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button class="btn btn-secondary">Log in</button>
+          <button class="btn btn-primary">Start free</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">Crystal-clear calling</span>
+            <h1>Talk, share, and close deals faster.</h1>
+            <p>
+              Build stronger customer relationships with secure HD voice, face-to-face video,
+              and quick team collaboration from any device.
+            </p>
+
+            <div class="hero-actions">
+              <button class="btn btn-primary" id="startCallBtn">Start a call</button>
+              <button class="btn btn-secondary">Book demo</button>
+            </div>
+
+            <div class="meta-row">
+              <div><strong>12k+</strong> teams online</div>
+              <div><strong>99.9%</strong> uptime</div>
+              <div><strong>4.9/5</strong> customer rating</div>
+            </div>
+          </div>
+
+          <div class="call-panel" aria-label="Call preview panel">
+            <div class="call-header">
+              <div class="call-header-left">
+                <div class="avatar">A</div>
+                <div>
+                  <div class="call-title">Ava Morgan</div>
+                  <small style="color: var(--muted);">Sales follow-up</small>
+                </div>
+              </div>
+              <span class="status-pill">Live</span>
+            </div>
+
+            <div class="preview">
+              <div class="preview-card">
+                <div class="preview-bg"></div>
+                <div class="call-overlay">HD video • 12:48</div>
+                <div class="person main">A</div>
+                <div class="person side">J</div>
+              </div>
+            </div>
+
+            <div class="call-controls">
+              <button class="control-btn active" aria-label="Mute">🎙️</button>
+              <button class="control-btn active" aria-label="Camera">📹</button>
+              <button class="control-btn" aria-label="Share screen">🖥️</button>
+              <button class="control-btn danger" aria-label="End call">📞</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="container">
+          <div class="section-head">
+            <h2>Everything your team needs to connect instantly.</h2>
+            <p>
+              Designed for service teams, sales leaders, and support desks that need a call experience that feels premium and runs smoothly everywhere.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-icon">📞</div>
+              <h3>Instant voice calls</h3>
+              <p>Launch one-to-one or group calls in seconds with low-latency HD audio and instant call controls.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon">🎥</div>
+              <h3>Video meetings</h3>
+              <p>Host polished meetings with screen sharing, profile overlays, and smart camera switching for every participant.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon">🔒</div>
+              <h3>Secure by default</h3>
+              <p>Keep conversations private with encrypted calls, access controls, and compliance-friendly team permissions.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats" id="solutions">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-box">
+              <strong>2.8M</strong>
+              <span>calls completed each month</span>
+            </div>
+            <div class="stat-box">
+              <strong>43%</strong>
+              <span>faster response times</span>
+            </div>
+            <div class="stat-box">
+              <strong>89%</strong>
+              <span>customer satisfaction lift</span>
+            </div>
+            <div class="stat-box">
+              <strong>18ms</strong>
+              <span>global latency average</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bottom-cta" id="pricing">
+        <div class="container">
+          <div class="cta-box">
+            <div>
+              <h3>Ready to turn every conversation into a conversion?</h3>
+              <p>Launch your next call experience with NightWire today.</p>
+            </div>
+            <button class="btn btn-primary">Get started</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="support">
+      <div class="container footer-bar">
+        <div>© 2026 NightWire</div>
+        <div>hello@nightwire.com</div>
+      </div>
+    </footer>
+
+    <script>
+      const startCallBtn = document.getElementById('startCallBtn');
+      const statusPill = document.querySelector('.status-pill');
+      const controlButtons = document.querySelectorAll('.control-btn');
+
+      startCallBtn.addEventListener('click', () => {
+        const isLive = statusPill.textContent.trim() === 'Live';
+        statusPill.textContent = isLive ? 'Connecting...' : 'Live';
+        statusPill.style.background = isLive ? 'rgba(245, 158, 11, 0.12)' : 'rgba(34, 197, 94, 0.12)';
+        statusPill.style.borderColor = isLive ? 'rgba(245, 158, 11, 0.35)' : 'rgba(34, 197, 94, 0.3)';
+        statusPill.style.color = isLive ? '#fcd34d' : '#9ae6b4';
       });
 
-      lastTypingState = isTyping;
-    } catch (error) {
-      console.log("Typing presence error:", error);
-    }
-  }, 500);
-}
-    
-async function setTyping(isTyping) {
-  const {
-    data: { user }
-  } = await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  // Don't send the same state repeatedly
-  if (lastTypingState === isTyping) {
-    return;
-  }
-
-  // Don't send typing updates too frequently
-  if (typingTimeout) {
-    clearTimeout(typingTimeout);
-  }
-
-  typingTimeout = setTimeout(async () => {
-    try {
-      await typingChannel.track({
-        user_id: user.id,
-        username: user.email.split("@")[0],
-        typing: isTyping
-      });
-
-      lastTypingState = isTyping;
-    } catch (error) {
-      console.log("Typing presence error:", error);
-    }
-  }, 500);
-}
-
-function updateTypingIndicator() {
-
-  const indicator =
-    document.getElementById("typingIndicator");
-
-  if (!indicator) {
-    return;
-  }
-
-  const presence =
-    typingChannel.presenceState();
-
-  const typingUsers = [];
-
-  Object.values(presence).forEach(
-    presences => {
-
-      presences.forEach(
-        presence => {
-
-          if (presence.typing === true) {
-
-            typingUsers.push(
-              presence.username
-            );
-
+      controlButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          if (button.classList.contains('danger')) {
+            statusPill.textContent = 'Ended';
+            statusPill.style.background = 'rgba(248, 113, 113, 0.12)';
+            statusPill.style.borderColor = 'rgba(248, 113, 113, 0.3)';
+            statusPill.style.color = '#fca5a5';
+            return;
           }
 
-        }
-      );
-
-    }
-  );
-
-  if (typingUsers.length === 0) {
-
-    indicator.textContent = "";
-
-  } else if (typingUsers.length === 1) {
-
-    indicator.textContent =
-      typingUsers[0] +
-      " is typing...";
-
-  } else {
-
-    indicator.textContent =
-      typingUsers.length +
-      " people are typing...";
-
-  }
-}
-// ==============================
-// ONLINE / OFFLINE STATUS
-// ==============================
-
-const onlineStatus =
-  document.getElementById("onlineStatus");
-
-function updateOnlineStatus() {
-
-  if (!onlineStatus) {
-    return;
-  }
-
-  if (navigator.onLine) {
-
-    onlineStatus.textContent =
-      "● Online";
-
-    onlineStatus.style.color =
-      "#57f287";
-
-  } else {
-
-    onlineStatus.textContent =
-      "● Offline";
-
-    onlineStatus.style.color =
-      "#ed4245";
-
-  }
-}
-
-window.addEventListener(
-  "online",
-  updateOnlineStatus
-);
-
-window.addEventListener(
-  "offline",
-  updateOnlineStatus
-);
-
-updateOnlineStatus();
-    
-    const authScreen =
-      document.getElementById("auth");
-
-    const chatScreen =
-      document.getElementById("chat");
-
-   const statusText =
-  document.getElementById("status");
-
-    
-// ==============================
-// TAB MESSAGE NOTIFICATION
-// ==============================
-
-let unreadCount = 0;
-
-function updateTabTitle() {
-
-  if (unreadCount > 0) {
-
-    document.title =
-      "(" +
-      unreadCount +
-      ") 💬 My Messages";
-
-  } else {
-
-    document.title =
-      "💬 My Messages";
-
-  }
-}
-    
-    
-// ==============================
-// NOTIFICATIONS
-// ==============================
-
-async function requestNotifications() {
-
-  if (!("Notification" in window)) {
-    return;
-  }
-
-  if (Notification.permission === "default") {
-    await Notification.requestPermission();
-  }
-}
-
-async function uploadAvatar() {
-  const fileInput = document.getElementById("avatarInput");
-  const file = fileInput.files[0];
-
-  if (!file) {
-    alert("Choose a picture first.");
-    return;
-  }
-
-  const {
-    data: { user }
-  } = await supabaseClient.auth.getUser();
-
-  if (!user) {
-    alert("You need to log in first.");
-    return;
-  }
-
-  alert("Uploading picture... 📸");
-
-  const fileName =
-    user.id + "-" + Date.now() + "-" + file.name;
-
-  const { error: uploadError } =
-    await supabaseClient.storage
-      .from("avatars")
-      .upload(fileName, file);
-
-  if (uploadError) {
-    alert(
-      "Upload error:\n\n" +
-      uploadError.message
-    );
-    return;
-  }
-
-  const { data: publicUrlData } =
-    supabaseClient.storage
-      .from("avatars")
-      .getPublicUrl(fileName);
-
-  const avatarUrl =
-    publicUrlData.publicUrl;
-
-  console.log("Avatar URL:", avatarUrl);
-
-  const { data: profileData, error: profileError } =
-    await supabaseClient
-      .from("profiles")
-      .upsert({
-        id: user.id,
-        avatar_url: avatarUrl
-      })
-      .select()
-      .single();
-
-  if (profileError) {
-    alert(
-      "Profile picture error:\n\n" +
-      profileError.message
-    );
-    return;
-  }
-
-  localStorage.setItem("avatarUrl", avatarUrl);
-
-  const profileAvatar =
-    document.getElementById("profileAvatar");
-
-  if (profileAvatar) {
-    profileAvatar.src = avatarUrl;
-  }
-
-  alert("Profile picture updated! 📸");
-}
- 
-// ==============================
-// USER PROFILE
-// ==============================
-
-async function openProfile() {
-
-  const panel =
-    document.getElementById("profilePanel");
-
-  const usernameInput =
-    document.getElementById("profileUsername");
-
-  const bioInput =
-    document.getElementById("profileBio");
-
-  const profileAvatar =
-    document.getElementById("profileAvatar");
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  const { data, error } =
-    await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
-
-  if (error) {
-
-    console.log(
-      "Profile load error:",
-      error
-    );
-
-    return;
-  }
-
-  if (data) {
-
-    usernameInput.value =
-      data.username || "";
-
-    bioInput.value =
-      data.bio || "";
-
-    if (profileAvatar) {
-      profileAvatar.src =
-        data.avatar_url ||
-        "https://via.placeholder.com/100";
-    }
-
-  } else {
-
-    usernameInput.value =
-      user.email.split("@")[0];
-
-    bioInput.value =
-      "";
-
-    if (profileAvatar) {
-      profileAvatar.src =
-        "https://via.placeholder.com/100";
-    }
-
-  }
-
-  panel.style.display =
-    "flex";
-}
-
-// ==============================
-// CLOSE PROFILE
-// ==============================
-
-function closeProfile() {
-
-  document.getElementById(
-    "profilePanel"
-  ).style.display = "none";
-
-}
-
-
-// ==============================
-// SAVE PROFILE
-// ==============================
-
-async function saveProfile() {
-
-  const username =
-    document
-      .getElementById("profileUsername")
-      .value
-      .trim();
-
-  const bio =
-    document
-      .getElementById("profileBio")
-      .value
-      .trim();
-
-  const profileStatus =
-    document.getElementById(
-      "profileStatus"
-    );
-
-  if (!username) {
-
-    profileStatus.textContent =
-      "Please enter a username.";
-
-    return;
-  }
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  profileStatus.textContent =
-    "Saving...";
-
-  const avatarUrl =
-    localStorage.getItem(
-      "avatarUrl"
-    ) || null;
-
-  const { error } =
-    await supabaseClient
-      .from("profiles")
-      .upsert({
-        id: user.id,
-        username: username,
-        bio: bio,
-        avatar_url: avatarUrl
-      });
-
-  if (error) {
-
-    profileStatus.textContent =
-      "Error: " +
-      error.message;
-
-    console.log(error);
-
-    return;
-  }
-
-  profileStatus.textContent =
-    "Profile saved! ✅";
-  
-// Update username on existing messages
-await supabaseClient
-  .from("messages")
-  .update({
-    username: username
-  })
-  .eq("user_id", user.id);
-
-  
-  loadMessages();
-
-  setTimeout(() => {
-
-    closeProfile();
-
-  }, 800);
-}
-    
-    async function signUp() {
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const password =
-        document.getElementById("password").value;
-
-      if (!email || !password) {
-
-        statusText.textContent =
-          "Enter an email and password.";
-
-        return;
-      }
-
-      const { error } =
-        await supabaseClient.auth.signUp({
-          email: email,
-          password: password
+          button.classList.toggle('active');
         });
-
-      if (error) {
-
-        statusText.textContent =
-          error.message;
-
-      } else {
-
-        statusText.textContent =
-          "Account created! You can now log in.";
-      }
-    }
-
-
-
-    async function logIn() {
-
-      const email =
-        document.getElementById("email").value.trim();
-
-      const password =
-        document.getElementById("password").value;
-
-      if (!email || !password) {
-
-        statusText.textContent =
-          "Enter an email and password.";
-
-        return;
-      }
-
-      statusText.textContent =
-        "Logging in...";
-
-      const { error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-
-      if (error) {
-
-        statusText.textContent =
-          error.message;
-
-      } else {
-
-        statusText.textContent = "";
-      }
-    }
-
-
-    async function logOut() {
-
-      await supabaseClient.auth.signOut();
-    }
-
-
-async function sendMessage() {
-
-  const input =
-    document.getElementById("messageInput");
-
-  const imageInput =
-    document.getElementById("imageInput");
-
-  const text =
-    input.value.trim();
-
-  const file =
-    imageInput.files[0];
-
-  // Don't send if there is no text or image
-  if (!text && !file) {
-    return;
-  }
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  const username =
-    user.email.split("@")[0];
-
-  const avatar_url =
-    localStorage.getItem("avatarUrl") || null;
-
-  let imageUrl = null;
-
-  // ==============================
-  // UPLOAD IMAGE
-  // ==============================
-
-  if (file) {
-
-    const fileName =
-      user.id +
-      "-" +
-      Date.now() +
-      "-" +
-      file.name;
-
-    const { error: uploadError } =
-      await supabaseClient.storage
-        .from("chat-images")
-        .upload(fileName, file);
-
-    if (uploadError) {
-
-      alert(
-        "IMAGE UPLOAD ERROR:\n\n" +
-        uploadError.message
-      );
-
-      console.log(uploadError);
-
-      return;
-    }
-
-    const { data: publicUrlData } =
-      supabaseClient.storage
-        .from("chat-images")
-        .getPublicUrl(fileName);
-
-    imageUrl =
-      publicUrlData.publicUrl;
-  }
-
-  // ==============================
-  // SAVE MESSAGE
-  // ==============================
-
-  const { error } =
-    await supabaseClient
-     .from("messages")
-.insert({
-  user_id: user.id,
-  username: username,
-  avatar_url: avatar_url,
-  message: text,
-  image_url: imageUrl,
-  reply_to: replyingTo,
-  read_at: null
-});
-
-  if (error) {
-
-    alert(
-      "ERROR:\n\n" +
-      error.message +
-      "\n\nCode: " +
-      error.code
-    );
-
-    console.log(error);
-
-    return;
-  }
-
- input.value = "";
-imageInput.value = "";
-
-document.getElementById("imagePreview").style.display = "none";
-document.getElementById("previewImage").src = "";
-
-clearTimeout(typingTimeout);
-  await setTyping(false);
-
-  loadMessages();
-}
-
-    let replyingTo = null;
-
-function startReply(
-  messageId,
-  username,
-  messageText
-) {
-
-  replyingTo = messageId;
-
-  document.getElementById(
-    "replyUsername"
-  ).textContent =
-    "Replying to " + username;
-
-  document.getElementById(
-    "replyText"
-  ).textContent =
-    messageText || "📷 Image";
-
-  document.getElementById(
-    "replyPreview"
-  ).style.display = "flex";
-
-  document.getElementById(
-    "messageInput"
-  ).focus();
-}
-
-
-function cancelReply() {
-
-  replyingTo = null;
-
-  document.getElementById(
-    "replyPreview"
-  ).style.display = "none";
-}
-    
-    document
-  .getElementById("imageInput")
-  .addEventListener("change", function () {
-
-    const file = this.files[0];
-
-    if (!file) {
-      return;
-    }
-
-    const preview =
-      document.getElementById("imagePreview");
-
-    const previewImage =
-      document.getElementById("previewImage");
-
-    const imageUrl =
-      URL.createObjectURL(file);
-
-    previewImage.src = imageUrl;
-
-    preview.style.display = "block";
-  });
-
-
-function removeImagePreview() {
-
-  const imageInput =
-    document.getElementById("imageInput");
-
-  const preview =
-    document.getElementById("imagePreview");
-
-  const previewImage =
-    document.getElementById("previewImage");
-
-  imageInput.value = "";
-
-  previewImage.src = "";
-
-  preview.style.display = "none";
-}
-    
-// ==============================
-// READ RECEIPTS
-// ==============================
-
-async function markMessagesAsRead() {
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  const { error } =
-    await supabaseClient
-      .from("messages")
-      .update({
-        read_at: new Date().toISOString()
-      })
-      .is("read_at", null)
-      .neq("user_id", user.id);
-
-  if (error) {
-
-    console.log(
-      "Read receipt error:",
-      error
-    );
-
-  }
-}
-
-
-// ==============================
-// EDIT MESSAGE
-// ==============================
-
-async function editMessage(messageId, oldMessage) {
-
-  const newMessage =
-    prompt(
-      "Edit your message:",
-      oldMessage
-    );
-
-  if (newMessage === null) {
-    return;
-  }
-
-  const text =
-    newMessage.trim();
-
-  if (!text) {
-    return;
-  }
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  const { error } =
-    await supabaseClient
-      .from("messages")
-      .update({
-        message: text,
-        edited_at: new Date().toISOString()
-      })
-      .eq('"Id"', messageId)
-      .eq("user_id", user.id);
-
-  if (error) {
-
-    alert(
-      "Edit error:\n\n" +
-      error.message
-    );
-
-    console.log(error);
-    return;
-  }
-
-  loadMessages();
-}
-
-
-// ==============================
-// DELETE MESSAGE
-// ==============================
-
-async function deleteMessage(messageId) {
-
-  const confirmed =
-    confirm(
-      "Are you sure you want to delete this message?"
-    );
-
-  if (!confirmed) {
-    return;
-  }
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  const { error } =
-    await supabaseClient
-      .from("messages")
-      .delete()
-      .eq('"Id"', messageId)
-      .eq("user_id", user.id);
-
-  if (error) {
-
-    alert(
-      "Delete error:\n\n" +
-      error.message
-    );
-
-    console.log(error);
-    return;
-  }
-
-  loadMessages();
-}
-
-
-// ==============================
-// LOAD MESSAGES
-// ==============================
-
-async function loadMessages() {
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  // Get messages
-  const { data, error } =
-    await supabaseClient
-      .from("messages")
-      .select("*")
-      .order("created_at", { ascending: true });
-
-  if (error) {
-
-    console.log(
-      "LOAD MESSAGES ERROR:",
-      error
-    );
-
-    return;
-  }
-
-  // Get all user profiles
-  const { data: profiles, error: profilesError } =
-    await supabaseClient
-      .from("profiles")
-      .select("*");
-
-  if (profilesError) {
-
-    console.log(
-      "PROFILE LOAD ERROR:",
-      profilesError
-    );
-
-  }
-
-  // Make a profile lookup
-  const profileMap = {};
-
-  (profiles || []).forEach(profile => {
-
-    profileMap[profile.id] = profile;
-
-  });
-
-
-  const container =
-    document.getElementById("messages");
-
-  container.innerHTML = "";
-  
-const {
-  data: allReactions,
-  error: reactionsError
-} =
-  await supabaseClient
-    .from("message_reactions")
-    .select("*");
-
-if (reactionsError) {
-
-  console.log(
-    "Reaction load error:",
-    reactionsError
-  );
-
-}
-
- data.forEach(item => {
-
-    const row =
-      document.createElement("div");
-
-    const isMine =
-      user &&
-      item.user_id === user.id;
-
-    row.className =
-      "message-row" +
-      (isMine ? " mine" : "");
-
-
-    // ==============================
-    // PROFILE
-    // ==============================
-
-    const profile =
-      profileMap[item.user_id];
-
-    const username =
-  profile && profile.username
-    ? profile.username
-    : (item.username || "User");
-
-const avatarUrl =
-  profile && profile.avatar_url
-    ? profile.avatar_url
-    : (item.avatar_url || null);
-
-
-    // ==============================
-    // AVATAR
-    // ==============================
-
-    const avatar =
-      document.createElement("div");
-
-    avatar.className =
-      "avatar";
-
-    if (avatarUrl) {
-
-      const image =
-        document.createElement("img");
-
-      image.src =
-        avatarUrl;
-
-      image.alt =
-        username;
-
-      avatar.appendChild(
-        image
-      );
-
-    } else {
-
-      avatar.textContent =
-        username
-          .charAt(0)
-          .toUpperCase();
-
-    }
-
-
-    // ==============================
-    // CONTENT
-    // ==============================
-
-    const content =
-      document.createElement("div");
-
-    content.className =
-      "message-content";
-
-
-    // ==============================
-    // USERNAME
-    // ==============================
-
-    const name =
-      document.createElement("div");
-
-    name.className =
-      "message-username";
-
-    name.textContent =
-      username;
-
-
-    // ==============================
-    // MESSAGE
-    // ==============================
-
-    const bubble =
-      document.createElement("div");
-
-    bubble.className =
-      "message";
-// ==============================
-// SHOW REPLIED-TO MESSAGE
-// ==============================
-
-if (item.reply_to) {
-
-  const repliedMessage =
-    data.find(
-      msg => msg.Id === item.reply_to
-    );
-
-  if (repliedMessage) {
-
-    const replyBox =
-      document.createElement("div");
-
-    replyBox.className =
-      "replied-message";
-
-    replyBox.textContent =
-      "↩️ " +
-      (repliedMessage.username || "User") +
-      ": " +
-      (repliedMessage.message || "📷 Image");
-
-    bubble.appendChild(replyBox);
-  }
-}
-
-    const text =
-      document.createElement("div");
-
-    text.className =
-      "message-text";
-
-    text.textContent =
-      item.message || "";
-
-    bubble.appendChild(
-      text
-    );
-   
-// ==============================
-// DISPLAY IMAGE
-// ==============================
-
-if (item.image_url) {
-
-  const image =
-    document.createElement("img");
-
-  image.src =
-    item.image_url;
-
-  image.className =
-    "message-image";
-
-  image.alt =
-    "Shared image";
-
-  image.onclick = () => {
-    window.open(
-      item.image_url,
-      "_blank"
-    );
-  };
-
-  bubble.appendChild(image);
-}
-
-    // ==============================
-    // EDITED LABEL
-    // ==============================
-
-    if (item.edited_at) {
-
-      const edited =
-        document.createElement("span");
-
-      edited.textContent =
-        " (edited)";
-
-      edited.className =
-        "edited-label";
-
-      text.appendChild(
-        edited
-      );
-
-    }
-
-
-    // ==============================
-    // TIME
-    // ==============================
-
-    const time =
-      document.createElement("div");
-
-    time.className =
-      "message-time";
-
-    time.textContent =
-      new Date(item.created_at)
-        .toLocaleTimeString(
-          [],
-          {
-            hour: "numeric",
-            minute: "2-digit"
-          }
-        );
-
-
-    content.appendChild(
-      name
-    );
-
-    content.appendChild(
-      bubble
-    );
-
-    content.appendChild(
-      time
-    );
-
-// ==============================
-// REACTIONS
-// ==============================
-
-const reactionBar =
-  document.createElement("div");
-
-reactionBar.className =
-  "reaction-bar";
-
-const reactions = [
-  "❤️",
-  "😂",
-  "👍",
-  "😮",
-  "😢"
-];
-
-const reactionData =
-  (allReactions || []).filter(
-    r => r.message_id === item.Id
-  );
-   
-reactions.forEach(reaction => {
-
-  const count =
-    (reactionData || []).filter(
-      r => r.reaction === reaction
-    ).length;
-
-  const myReaction =
-    (reactionData || []).some(
-      r =>
-        r.reaction === reaction &&
-        user &&
-        r.user_id === user.id
-    );
-
-  const reactionButton =
-    document.createElement("button");
-
-  reactionButton.className =
-    "reaction-button";
-
-  reactionButton.textContent =
-    reaction +
-    (count > 0 ? " " + count : "");
-
-  if (myReaction) {
-
-    reactionButton.classList.add(
-      "my-reaction"
-    );
-
-  }
-
-  reactionButton.onclick = () => {
-
-    toggleReaction(
-      item.Id,
-      reaction
-    );
-
-  };
-
-  reactionBar.appendChild(
-    reactionButton
-  );
-
-});
-
-content.appendChild(
-  reactionBar
-);
-   
-    // ==============================
-// REPLY BUTTON
-// ==============================
-
-const replyButton =
-  document.createElement("button");
-
-replyButton.textContent =
-  "↩️ Reply";
-
-replyButton.className =
-  "reply-button";
-
-replyButton.onclick = () => {
-
-  startReply(
-    item.Id,
-    username,
-    item.message
-  );
-};
-
-content.appendChild(replyButton);
-   
-    // ==============================
-    // EDIT + DELETE
-    // ==============================
-
-    if (isMine) {
-
-      const actions =
-        document.createElement("div");
-
-      actions.className =
-        "message-actions";
-
-
-      const editButton =
-        document.createElement("button");
-
-      editButton.textContent =
-        "✏️ Edit";
-
-      editButton.className =
-        "edit-button";
-
-      editButton.onclick = () => {
-
-        editMessage(
-          item.Id,
-          item.message
-        );
-
-      };
-
-
-      const deleteButton =
-        document.createElement("button");
-
-      deleteButton.textContent =
-        "🗑️ Delete";
-
-      deleteButton.className =
-        "delete-button";
-
-      deleteButton.onclick = () => {
-
-        deleteMessage(
-          item.Id
-        );
-
-      };
-
-
-      actions.appendChild(
-        editButton
-      );
-
-      actions.appendChild(
-        deleteButton
-      );
-
-      content.appendChild(
-        actions
-      );
-
-    }
-
-
-    // ==============================
-    // READ RECEIPT
-    // ==============================
-
-    if (isMine) {
-
-      const receipt =
-        document.createElement("div");
-
-      receipt.className =
-        "read-receipt";
-
-      if (item.read_at) {
-
-        receipt.textContent =
-          "✓✓ Read";
-
-        receipt.style.color =
-          "#57f287";
-
-      } else {
-
-        receipt.textContent =
-          "✓ Sent";
-
-      }
-
-      content.appendChild(
-        receipt
-      );
-
-    }
-
-
-    row.appendChild(
-      avatar
-    );
-
-    row.appendChild(
-      content
-    );
-
-    container.appendChild(
-      row
-    );
-
-  });
-
-
-  container.scrollTop =
-    container.scrollHeight;
-}
-    
-    // ==============================
-    // SHOW CHAT
-    // ==============================
-
-    function showChat() {
-
-  authScreen.style.display =
-    "none";
-
-  requestNotifications();
-
-  unreadCount = 0;
-
-  updateTabTitle();
-
-  chatScreen.style.display =
-    "flex";
-      
-  markMessagesAsRead();
-
-  loadMessages();
-}
-
-
-    // ==============================
-    // SHOW LOGIN
-    // ==============================
-
-    function showLogin() {
-
-      authScreen.style.display =
-        "block";
-
-      chatScreen.style.display =
-        "none";
-    }
-
-// ==============================
-// NEW MESSAGE TAB COUNTER
-// ==============================
-
-const messageChannel =
-  supabaseClient.channel("main-chat-messages");
-
-messageChannel
-  .on(
-    "postgres_changes",
-    {
-      event: "INSERT",
-      schema: "public",
-      table: "messages"
-    },
-    async (payload) => {
-
-      const {
-        data: { user }
-      } =
-        await supabaseClient.auth.getUser();
-
-      // Don't count your own messages
-      if (
-        user &&
-        payload.new.user_id === user.id
-      ) {
-        return;
-      }
-
-      // Add one unread message
-      unreadCount++;
-
-      updateTabTitle();
-    }
-  )
-  .subscribe();
-
-    
-    // ==============================
-    // WATCH LOGIN STATUS
-    // ==============================
-
-    supabaseClient.auth.onAuthStateChange(
-      (event, session) => {
-
-        if (session) {
-
-          showChat();
-
-        } else {
-
-          showLogin();
-        }
-
-      }
-    );
-
-
-    // ==============================
-    // ENTER KEY SENDS MESSAGE
-    // ==============================
-
-    document
-      .getElementById("messageInput")
-      .addEventListener(
-        "keydown",
-        function(event) {
-
-          if (event.key === "Enter") {
-
-            sendMessage();
-          }
-
-        }
-      );
-// ==============================
-// DETECT TYPING
-// ==============================
-
-document
-  .getElementById("messageInput")
-  .addEventListener(
-    "input",
-    function() {
-
-      if (this.value.trim() !== "") {
-
-        setTyping(true);
-
-        clearTimeout(typingTimeout);
-
-        typingTimeout =
-          setTimeout(
-            () => {
-              setTyping(false);
-            },
-            1500
-          );
-
-      } else {
-
-        clearTimeout(typingTimeout);
-
-        setTyping(false);
-
-      }
-
-    }
-  );
-
-   async function toggleReaction(
-  messageId,
-  reaction
-) {
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) {
-    return;
-  }
-
-  const {
-    data: existingReaction,
-    error: findError
-  } =
-    await supabaseClient
-      .from("message_reactions")
-      .select("id")
-      .eq("message_id", messageId)
-      .eq("user_id", user.id)
-      .eq("reaction", reaction);
-
-  if (findError) {
-
-    console.log(
-      "Reaction check error:",
-      findError
-    );
-
-    return;
-  }
-
-  if (
-    existingReaction &&
-    existingReaction.length > 0
-  ) {
-
-    await supabaseClient
-      .from("message_reactions")
-      .delete()
-      .eq("id", existingReaction[0].id);
-
-  } else {
-
-    await supabaseClient
-      .from("message_reactions")
-      .insert({
-        message_id: messageId,
-        user_id: user.id,
-        reaction: reaction
       });
-
-  }
-
-  loadMessages();
-}
-
-    let currentPrivateUser = null;
-
-async function openPrivateChats() {
-
-  const panel =
-    document.getElementById("privateChatPanel");
-
-  panel.style.display = "flex";
-
-  await loadPrivateUsers();
-}
-
-
-function closePrivateChats() {
-
-  document.getElementById(
-    "privateChatPanel"
-  ).style.display = "none";
-
-}
-
-
-async function loadPrivateUsers() {
-
-  const userList = document.getElementById("privateUserList");
-
-  userList.innerHTML = "Loading...";
-
-  const {
-    data: { user }
-  } = await supabaseClient.auth.getUser();
-
-  if (!user) {
-    userList.textContent = "You need to log in first.";
-    return;
-  }
-
-  // =========================
-  // GET FRIENDS
-  // =========================
-
-  const { data: friendships, error: friendshipError } =
-    await supabaseClient
-      .from("friendships")
-      .select("friend_id")
-      .eq("user_id", user.id);
-
-  if (friendshipError) {
-    console.log(friendshipError);
-    userList.textContent = "Could not load friends.";
-    return;
-  }
-
-  const friendIds =
-    (friendships || []).map(friend => friend.friend_id);
-
-
-  // =========================
-  // GET ALL USERS
-  // =========================
-
-  const { data: profiles, error: profileError } =
-    await supabaseClient
-      .from("profiles")
-      .select("id, username, avatar_url")
-      .neq("id", user.id)
-      .order("username");
-
-  if (profileError) {
-    console.log(profileError);
-    userList.textContent = "Could not load users.";
-    return;
-  }
-
-
-  // =========================
-  // GET SENT REQUESTS
-  // =========================
-
-  const { data: sentRequests } =
-    await supabaseClient
-      .from("friend_requests")
-      .select("receiver_id, status")
-      .eq("requester_id", user.id)
-      .eq("status", "pending");
-
-
-  // =========================
-  // GET RECEIVED REQUESTS
-  // =========================
-
-  const { data: receivedRequests } =
-    await supabaseClient
-      .from("friend_requests")
-      .select("id, requester_id, status")
-      .eq("receiver_id", user.id)
-      .eq("status", "pending");
-
-
-  userList.innerHTML = "";
-
-
-  // =========================
-  // ADD FRIENDS
-  // =========================
-
-  const addTitle = document.createElement("h3");
-  addTitle.textContent = "➕ Add Friends";
-  addTitle.style.margin = "5px 0 10px";
-
-  userList.appendChild(addTitle);
-
-
-  const usersYouCanAdd = (profiles || []).filter(profile => {
-
-    // Already friends
-    if (friendIds.includes(profile.id)) {
-      return false;
-    }
-
-    // Already sent request
-    if (
-      sentRequests &&
-      sentRequests.some(request =>
-        request.receiver_id === profile.id
-      )
-    ) {
-      return false;
-    }
-
-    // They already sent you a request
-    if (
-      receivedRequests &&
-      receivedRequests.some(request =>
-        request.requester_id === profile.id
-      )
-    ) {
-      return false;
-    }
-
-    return true;
-  });
-
-
-  if (usersYouCanAdd.length === 0) {
-
-    const none = document.createElement("div");
-
-    none.textContent = "No users available to add.";
-
-    none.style.color = "#8f96a3";
-    none.style.fontSize = "13px";
-    none.style.marginBottom = "15px";
-
-    userList.appendChild(none);
-
-  } else {
-
-    usersYouCanAdd.forEach(profile => {
-
-      const button = document.createElement("button");
-
-      button.className = "private-user-button";
-
-      const avatar = document.createElement("img");
-
-      avatar.src =
-        profile.avatar_url ||
-        "https://via.placeholder.com/40";
-
-      avatar.className = "private-user-avatar";
-
-
-      const name = document.createElement("span");
-
-      name.textContent =
-        profile.username || "Unknown User";
-
-
-      const addButton = document.createElement("button");
-
-      addButton.textContent = "➕";
-
-      addButton.title = "Add Friend";
-
-      addButton.style.marginLeft = "auto";
-
-      addButton.style.background = "#5865f2";
-      addButton.style.color = "white";
-      addButton.style.border = "none";
-      addButton.style.borderRadius = "6px";
-      addButton.style.padding = "6px 9px";
-      addButton.style.cursor = "pointer";
-
-
-      addButton.onclick = async (event) => {
-
-        event.stopPropagation();
-
-        const { error } =
-          await supabaseClient
-            .from("friend_requests")
-            .insert({
-              requester_id: user.id,
-              receiver_id: profile.id
-            });
-
-        if (error) {
-
-          alert(
-            "Could not send friend request:\n\n" +
-            error.message
-          );
-
-          console.log(error);
-
-          return;
-        }
-
-        alert(
-          "Friend request sent to " +
-          (profile.username || "user") +
-          "!"
-        );
-
-        await loadPrivateUsers();
-      };
-
-
-      button.appendChild(avatar);
-      button.appendChild(name);
-      button.appendChild(addButton);
-
-      userList.appendChild(button);
-
-    });
-  }
-
-
-  // =========================
-  // FRIEND REQUESTS
-  // =========================
-
-  const requestTitle = document.createElement("h3");
-
-  requestTitle.textContent = "👥 Friend Requests";
-
-  requestTitle.style.margin = "15px 0 10px";
-
-  userList.appendChild(requestTitle);
-
-
-  if (!receivedRequests || receivedRequests.length === 0) {
-
-    const none = document.createElement("div");
-
-    none.textContent = "No pending requests.";
-
-    none.style.color = "#8f96a3";
-    none.style.fontSize = "13px";
-    none.style.marginBottom = "15px";
-
-    userList.appendChild(none);
-
-  } else {
-
-    for (const request of receivedRequests) {
-
-      const { data: profile } =
-        await supabaseClient
-          .from("profiles")
-          .select("id, username, avatar_url")
-          .eq("id", request.requester_id)
-          .maybeSingle();
-
-
-      const box = document.createElement("div");
-
-      box.className = "private-user-button";
-
-      box.style.cursor = "default";
-
-
-      const avatar = document.createElement("img");
-
-      avatar.src =
-        profile?.avatar_url ||
-        "https://via.placeholder.com/40";
-
-      avatar.className = "private-user-avatar";
-
-
-      const name = document.createElement("span");
-
-      name.textContent =
-        profile?.username || "Unknown User";
-
-
-      const acceptButton = document.createElement("button");
-
-      acceptButton.textContent = "✅";
-
-      acceptButton.title = "Accept Friend Request";
-
-      acceptButton.style.marginLeft = "auto";
-
-      acceptButton.style.background = "#5865f2";
-      acceptButton.style.color = "white";
-      acceptButton.style.border = "none";
-      acceptButton.style.borderRadius = "6px";
-      acceptButton.style.padding = "6px 9px";
-      acceptButton.style.cursor = "pointer";
-
-
-      acceptButton.onclick = async () => {
-
-        const { error } =
-          await supabaseClient.rpc(
-            "accept_friend_request",
-            {
-              request_id: request.id
-            }
-          );
-
-        if (error) {
-
-          alert(
-            "Could not accept request:\n\n" +
-            error.message
-          );
-
-          console.log(error);
-
-          return;
-        }
-
-        await loadPrivateUsers();
-      };
-
-
-      box.appendChild(avatar);
-      box.appendChild(name);
-      box.appendChild(acceptButton);
-
-      userList.appendChild(box);
-    }
-  }
-
-
-  // =========================
-  // FRIENDS
-  // =========================
-
-  const friendsTitle = document.createElement("h3");
-
-  friendsTitle.textContent = "💬 Friends";
-
-  friendsTitle.style.margin = "15px 0 10px";
-
-  userList.appendChild(friendsTitle);
-
-
-  const friends =
-    (profiles || []).filter(profile =>
-      friendIds.includes(profile.id)
-    );
-
-
-  if (friends.length === 0) {
-
-    const none = document.createElement("div");
-
-    none.textContent = "You don't have any friends yet.";
-
-    none.style.color = "#8f96a3";
-    none.style.fontSize = "13px";
-
-    userList.appendChild(none);
-
-  } else {
-
-    friends.forEach(profile => {
-
-      const button = document.createElement("button");
-
-      button.className = "private-user-button";
-
-
-      const avatar = document.createElement("img");
-
-      avatar.src =
-        profile.avatar_url ||
-        "https://via.placeholder.com/40";
-
-      avatar.className = "private-user-avatar";
-
-
-      const name = document.createElement("span");
-
-      name.textContent =
-        profile.username || "Unknown User";
-
-
-      button.appendChild(avatar);
-      button.appendChild(name);
-
-
-      button.onclick = () => {
-
-        openPrivateChat(
-          profile.id,
-          profile.username || "Unknown User"
-        );
-
-      };
-
-
-      userList.appendChild(button);
-
-    });
-  }
-}
-    async function openPrivateChat(
-  userId,
-  username
-) {
-      
-startPrivateRealtime();
-      
-  currentPrivateUser = {
-    id: userId,
-    username: username
-  };
-
-  document.getElementById(
-    "privateUserList"
-  ).style.display = "none";
-
-  document.getElementById(
-    "privateConversation"
-  ).style.display = "block";
-
-  document.getElementById(
-    "privateChatUsername"
-  ).textContent = username;
-
-  await loadPrivateMessages();
-
-}
-
-
-function backToPrivateUsers() {
-
-  currentPrivateUser = null;
-
-  document.getElementById(
-    "privateConversation"
-  ).style.display = "none";
-
-  document.getElementById(
-    "privateUserList"
-  ).style.display = "block";
-
-}
-
-
-async function loadPrivateMessages() {
-  if (!currentPrivateUser) return;
-
-  const { data: { user } } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) return;
-
-  const { data, error } =
-    await supabaseClient
-      .from("private_messages")
-      .select("*")
-      .or(
-        `and(sender_id.eq.${user.id},receiver_id.eq.${currentPrivateUser.id}),and(sender_id.eq.${currentPrivateUser.id},receiver_id.eq.${user.id})`
-      )
-      .order("created_at", { ascending: true });
-
-  if (error) {
-    console.log("Private messages error:", error);
-    return;
-  }
-
-  const container =
-    document.getElementById("privateMessages");
-
-  container.innerHTML = "";
-
-  data.forEach(item => {
-    const message = document.createElement("div");
-
-    message.className =
-      item.sender_id === user.id
-        ? "private-message mine"
-        : "private-message";
-
-    message.textContent = item.message;
-
-    // Delete button for your own messages
-    if (item.sender_id === user.id) {
-      const deleteButton =
-        document.createElement("button");
-
-      deleteButton.textContent = "🗑️";
-      deleteButton.className =
-        "private-delete-button";
-
-      deleteButton.onclick = () =>
-        deletePrivateMessage(item.id);
-
-      message.appendChild(deleteButton);
-    }
-
-    container.appendChild(message);
-
-    if (item.sender_id === user.id && item.read_at) {
-      const read =
-        document.createElement("div");
-
-      read.className =
-        "private-read-receipt";
-
-      read.textContent = "✓ Read";
-
-      container.appendChild(read);
-    }
-  });
-
-  container.scrollTop =
-    container.scrollHeight;
-
-  const unreadMessages =
-    data.filter(item =>
-      item.receiver_id === user.id &&
-      !item.read_at
-    );
-
-  for (const item of unreadMessages) {
-    await supabaseClient
-      .from("private_messages")
-      .update({
-        read_at: new Date().toISOString()
-      })
-      .eq("id", item.id);
-  }
-}
-
-async function sendPrivateMessage() {
-
-  const input =
-    document.getElementById(
-      "privateMessageInput"
-    );
-
-  const text =
-    input.value.trim();
-
-
-  if (!text || !currentPrivateUser) {
-    return;
-  }
-
-
-  const {
-    data: { user }
-  } =
-    await supabaseClient.auth.getUser();
-
-
-  if (!user) {
-    return;
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("private_messages")
-      .insert({
-
-        sender_id: user.id,
-
-        receiver_id:
-          currentPrivateUser.id,
-
-        message: text
-
-      });
-
-
-  if (error) {
-
-    alert(
-      "PRIVATE MESSAGE ERROR:\n\n" +
-      error.message
-    );
-
-    console.log(error);
-
-    return;
-  }
-
-
-  input.value = "";
-
-  await loadPrivateMessages();
-
-}
-    let privateRealtimeChannel = null;
-
-function startPrivateRealtime() {
-  if (privateRealtimeChannel) {
-    supabaseClient.removeChannel(
-      privateRealtimeChannel
-    );
-  }
-
-  privateRealtimeChannel =
-    supabaseClient
-      .channel("private-messages-live")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "private_messages"
-        },
-        async () => {
-          if (currentPrivateUser) {
-            await loadPrivateMessages();
-          }
-        }
-      )
-      .subscribe();
-}
-    // ===============================
-// VOICE + VIDEO CALLING
-// ===============================
-
-let peerConnection = null;
-let localStream = null;
-let currentCallId = null;
-let isMuted = false;
-let cameraEnabled = true;
-
-const rtcConfig = {
-  iceServers: [
-    {
-      urls: "stun:stun.l.google.com:19302"
-    }
-  ]
-};
-
-async function createPeerConnection() {
-  peerConnection = new RTCPeerConnection(rtcConfig);
-
-  peerConnection.onicecandidate = async event => {
-    if (!event.candidate || !currentCallId || !currentPrivateUser) {
-      return;
-    }
-
-    const { data: { user } } =
-      await supabaseClient.auth.getUser();
-
-    if (!user) return;
-
-    await supabaseClient
-      .from("call_signals")
-      .insert({
-        call_id: currentCallId,
-        caller_id: user.id,
-        receiver_id: currentPrivateUser.id,
-        type: "candidate",
-        payload: event.candidate.toJSON()
-      });
-  };
-
-  peerConnection.ontrack = async event => {
-
-  console.log("REMOTE TRACK RECEIVED:", event.track.kind);
-
-  const stream = event.streams[0];
-
-  const remoteVideo =
-    document.getElementById("remoteVideo");
-
-  const remoteAudio =
-    document.getElementById("remoteAudio");
-
-  if (remoteVideo) {
-    remoteVideo.srcObject = stream;
-
-    try {
-      await remoteVideo.play();
-    } catch (error) {
-      console.log(
-        "Remote video autoplay blocked:",
-        error
-      );
-    }
-  }
-
-  if (remoteAudio) {
-    remoteAudio.srcObject = stream;
-
-    try {
-      await remoteAudio.play();
-
-      console.log("REMOTE AUDIO PLAYING");
-
-    } catch (error) {
-      console.log(
-        "Remote audio autoplay blocked:",
-        error
-      );
-    }
-  }
-};
-peerConnection.onconnectionstatechange = () => {
-  console.log(
-    "WEBRTC CONNECTION:",
-    peerConnection.connectionState
-  );
-};
-
-peerConnection.oniceconnectionstatechange = () => {
-  console.log(
-    "ICE CONNECTION:",
-    peerConnection.iceConnectionState
-  );
-};
-  return peerConnection;
-}
-
-async function startVoiceCall() {
-  await startCall(false);
-}
-
-async function startVideoCall() {
-  await startCall(true);
-}
-
-async function startCall(withVideo) {
-  if (!currentPrivateUser) {
-    alert("Choose someone to call first.");
-    return;
-  }
-
-  try {
-    const { data: { user } } =
-      await supabaseClient.auth.getUser();
-
-    if (!user) {
-      alert("You need to be logged in.");
-      return;
-    }
-
-    currentCallId = crypto.randomUUID();
-
-    localStream =
-      await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: withVideo
-      });
-
-    const localVideo =
-      document.getElementById("localVideo");
-
-    localVideo.srcObject = localStream;
-
-    if (!withVideo) {
-      localVideo.style.display = "none";
-    } else {
-      localVideo.style.display = "block";
-    }
-
-    document.getElementById("callPanel").style.display = "flex";
-    document.getElementById("callTitle").textContent =
-      withVideo
-        ? "📹 Calling " + currentPrivateUser.username + "..."
-        : "📞 Calling " + currentPrivateUser.username + "...";
-
-    await createPeerConnection();
-
-    localStream.getTracks().forEach(track => {
-      peerConnection.addTrack(track, localStream);
-    });
-
-    const offer =
-      await peerConnection.createOffer();
-
-    await peerConnection.setLocalDescription(offer);
-
-    await supabaseClient
-      .from("call_signals")
-      .insert({
-        call_id: currentCallId,
-        caller_id: user.id,
-        receiver_id: currentPrivateUser.id,
-     type: "offer",
-payload: {
-  sdp: offer.sdp,
-  type: offer.type,
-  video: withVideo,
-  username: user.user_metadata?.username || "Caller"
-}
-      });
-
-  } catch (error) {
-    console.log("CALL ERROR:", error);
-    alert(
-      "Could not start the call:\n\n" +
-      error.message
-    );
-
-    endCall();
-  }
-}
-
-async function toggleMute() {
-  if (!localStream) return;
-
-  isMuted = !isMuted;
-
-  localStream.getAudioTracks().forEach(track => {
-    track.enabled = !isMuted;
-  });
-
-  document.getElementById("muteButton").textContent =
-    isMuted ? "🔇 Unmute" : "🎙️ Mute";
-}
-
-async function toggleCamera() {
-  if (!localStream) return;
-
-  const videoTracks =
-    localStream.getVideoTracks();
-
-  if (videoTracks.length === 0) {
-    return;
-  }
-
-  cameraEnabled = !cameraEnabled;
-
-  videoTracks.forEach(track => {
-    track.enabled = cameraEnabled;
-  });
-
-  document.getElementById("cameraButton").textContent =
-    cameraEnabled ? "📷 Camera" : "🚫 Camera";
-}
-
-    async function enableCallAudio() {
-  const remoteAudio =
-    document.getElementById("remoteAudio");
-
-  const remoteVideo =
-    document.getElementById("remoteVideo");
-
-  if (remoteAudio) {
-    remoteAudio.muted = false;
-    remoteAudio.volume = 1;
-
-    try {
-      await remoteAudio.play();
-    } catch (error) {
-      console.log("Audio play error:", error);
-    }
-  }
-
-  if (remoteVideo) {
-    remoteVideo.muted = false;
-    remoteVideo.volume = 1;
-
-    try {
-      await remoteVideo.play();
-    } catch (error) {
-      console.log("Video play error:", error);
-    }
-  }
-
-  const soundButton =
-    document.getElementById("soundButton");
-
-  if (soundButton) {
-    soundButton.textContent = "🔊 Sound On";
-  }
-}
-    
-function endCall() {
-  if (localStream) {
-    localStream.getTracks().forEach(track => {
-      track.stop();
-    });
-  }
-
-  if (peerConnection) {
-    peerConnection.close();
-  }
-
-  localStream = null;
-  peerConnection = null;
-  currentCallId = null;
-  isMuted = false;
-  cameraEnabled = true;
-
-  const localVideo =
-    document.getElementById("localVideo");
-
-  const remoteVideo =
-    document.getElementById("remoteVideo");
-
-  if (localVideo) {
-    localVideo.srcObject = null;
-  }
-
-  if (remoteVideo) {
-    remoteVideo.srcObject = null;
-  }
-
-  document.getElementById("callPanel").style.display =
-    "none";
-
-  document.getElementById("muteButton").textContent =
-    "🎙️ Mute";
-
-  document.getElementById("cameraButton").textContent =
-    "📷 Camera";
-}
-    
-async function deletePrivateMessage(messageId) {
-  const confirmed = confirm(
-    "Delete this private message?"
-  );
-
-  if (!confirmed) return;
-
-  const { data: { user } } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) return;
-
-  const { error } =
-    await supabaseClient
-      .from("private_messages")
-      .delete()
-      .eq("id", messageId)
-      .eq("sender_id", user.id);
-
-  if (error) {
-    alert(
-      "DELETE ERROR:\n\n" +
-      error.message
-    );
-    console.log(error);
-    return;
-  }
-
-  await loadPrivateMessages();
-}
-     let callRealtimeChannel = null;
-
-async function startCallRealtime() {
-  if (callRealtimeChannel) {
-    supabaseClient.removeChannel(callRealtimeChannel);
-  }
-
-  callRealtimeChannel =
-    supabaseClient
-      .channel("call-signals-live")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "call_signals"
-        },
-        async payload => {
-  await handleCallSignal(payload.new);
-}
-      )
-     .subscribe((status, error) => {
-  if (status === "SUBSCRIBED") {
-    alert("📡 CALL REALTIME STATUS: SUBSCRIBED");
-  } else {
-    alert(
-      "📡 REALTIME ERROR:\n\n" +
-      status +
-      "\n\n" +
-      (error?.message || "No error message provided")
-    );
-  }
-      });
-
-} // closes startCallRealtime()
-
-async function handleCallSignal(signal) {
-  const {
-    data: { user }
-  } = await supabaseClient.auth.getUser();
-
-  if (!user) return;
-
-  /*
-    IMPORTANT:
-    Only handle signals that are meant for this user.
-  */
-
-  // Ignore our own signals
-  if (signal.caller_id === user.id && signal.receiver_id !== user.id) {
-    if (signal.type === "offer") {
-      return;
-    }
-  }
-
-  // =========================
-  // INCOMING OFFER
-  // =========================
-  if (signal.type === "offer") {
-
-    // Only the receiver should handle the offer
-    if (signal.receiver_id !== user.id) {
-      return;
-    }
-
-    currentCallId = signal.call_id;
-
-    currentPrivateUser = {
-      id: signal.caller_id,
-      username: signal.payload.username || "Caller"
-    };
-
-    try {
-
-      const stream =
-        await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: signal.payload.video === true
-        });
-
-      localStream = stream;
-
-      await createPeerConnection();
-
-      localStream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, localStream);
-      });
-
-      const localVideo =
-        document.getElementById("localVideo");
-
-      localVideo.srcObject = localStream;
-
-      if (signal.payload.video === true) {
-        localVideo.style.display = "block";
-      } else {
-        localVideo.style.display = "none";
-      }
-
-      document.getElementById("callPanel").style.display =
-        "flex";
-
-      document.getElementById("callTitle").textContent =
-        signal.payload.video === true
-          ? "📹 Incoming video call"
-          : "📞 Incoming voice call";
-
-      document.getElementById(
-        "incomingCallControls"
-      ).style.display = "flex";
-
-    } catch (error) {
-
-      console.log(
-        "INCOMING CALL ERROR:",
-        error
-      );
-
-      alert(
-        "Could not receive the call:\n\n" +
-        error.message
-      );
-    }
-
-    return;
-  }
-
-  // =========================
-  // ANSWER
-  // =========================
-  if (signal.type === "answer") {
-
-    // Only the original caller should handle the answer
-    if (signal.caller_id !== user.id) {
-      return;
-    }
-
-    if (!peerConnection) {
-      console.log(
-        "Received answer but no peer connection exists."
-      );
-      return;
-    }
-
-    try {
-
-      await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(signal.payload)
-      );
-
-      document.getElementById(
-        "callTitle"
-      ).textContent = "📞 Connected";
-
-      console.log("Call answer accepted.");
-
-    } catch (error) {
-
-      console.log(
-        "ANSWER ERROR:",
-        error
-      );
-
-      alert(
-        "ANSWER ERROR:\n\n" +
-        error.message
-      );
-    }
-
-    return;
-  }
-
-  // =========================
-  // ICE CANDIDATE
-  // =========================
-  if (signal.type === "candidate") {
-
-    // Only process candidates sent TO us
-    if (signal.receiver_id !== user.id) {
-      return;
-    }
-
-    if (!peerConnection) {
-      console.log(
-        "Received ICE candidate before peer connection was ready."
-      );
-      return;
-    }
-
-    try {
-
-      // Wait until a remote description exists
-      if (!peerConnection.remoteDescription) {
-        console.log(
-          "Ignoring ICE candidate until remote description is ready."
-        );
-        return;
-      }
-
-      await peerConnection.addIceCandidate(
-        new RTCIceCandidate(signal.payload)
-      );
-
-    } catch (error) {
-
-      console.log(
-        "ICE candidate error:",
-        error
-      );
-    }
-
-    return;
-  }
-}
-
-supabaseClient.auth.onAuthStateChange(
-  async (event, session) => {
-
-    if (session) {
-      console.log("Logged in — starting call realtime.");
-
-      await startCallRealtime();
-
-    } else {
-      console.log("Not logged in — call realtime stopped.");
-
-      if (callRealtimeChannel) {
-        await supabaseClient.removeChannel(
-          callRealtimeChannel
-        );
-
-        callRealtimeChannel = null;
-      }
-    }
-
-  }
-);
-
-async function acceptCall() {
-  if (!currentCallId || !peerConnection || !localStream) {
-    console.log("No incoming call to accept.");
-    return;
-  }
-
-  try {
-    const { data: { user } } =
-      await supabaseClient.auth.getUser();
-
-    if (!user) return;
-
-    const offerSignal =
-      await supabaseClient
-        .from("call_signals")
-        .select("*")
-        .eq("call_id", currentCallId)
-        .eq("type", "offer")
-        .maybeSingle();
-
-    if (offerSignal.error || !offerSignal.data) {
-      console.log("Could not find call offer.");
-      return;
-    }
-
-    const offer = offerSignal.data.payload;
-
-    await peerConnection.setRemoteDescription(
-      new RTCSessionDescription(offer)
-    );
-
-    const answer =
-      await peerConnection.createAnswer();
-
-    await peerConnection.setLocalDescription(answer);
-
-    await supabaseClient
-      .from("call_signals")
-      .insert({
-        call_id: currentCallId,
-        caller_id: offerSignal.data.caller_id,
-        receiver_id: user.id,
-        type: "answer",
-        payload: {
-          type: answer.type,
-          sdp: answer.sdp
-        }
-      });
-
-    document.getElementById(
-      "incomingCallControls"
-    ).style.display = "none";
-
-    document.getElementById(
-      "callTitle"
-    ).textContent = "📞 Connected";
-
-  } catch (error) {
-    console.log("ACCEPT CALL ERROR:", error);
-    alert(
-      "Could not accept the call:\n\n" +
-      error.message
-    );
-    endCall();
-  }
-}
-  
-    async function declineCall() {
-      console.log("Declining call...");
-      endCall();
-    }
-
-  </script>
-
- <div id="callPanel" class="call-panel" style="display: none;">
-  <div class="call-box">
-
-    <h2 id="callTitle">📞 Calling...</h2>
-
-    <video
-      id="remoteVideo"
-      autoplay
-      playsinline
-    ></video>
-    
-<audio
-  id="remoteAudio"
-  autoplay
-></audio>
-    
-    <video
-      id="localVideo"
-      autoplay
-      muted
-      playsinline
-    ></video>
-    
-    <div id="incomingCallControls" style="display: none;">
-  <button
-    type="button"
-    onclick="acceptCall()"
-  >
-    ✅ Accept
-  </button>
-
-  <button
-    type="button"
-    onclick="declineCall()"
-  >
-    ❌ Decline
-  </button>
-</div>
-
-    <button
-  type="button"
-  onclick="enableCallAudio()"
-  id="soundButton"
->
-  🔊 Enable Sound
-</button>
-    
-    <div class="call-controls">
-      <button
-        type="button"
-        onclick="toggleMute()"
-        id="muteButton"
-      >
-        🎙️ Mute
-      </button>
-
-      <button
-        type="button"
-        onclick="toggleCamera()"
-        id="cameraButton"
-      >
-        📷 Camera
-      </button>
-
-      <button
-        type="button"
-        onclick="endCall()"
-        class="end-call-button"
-      >
-        ☎️ End
-      </button>
-    </div>
-
-  </div>
-</div>
-
-</body>
+    </script>
+  </body>
 </html>
