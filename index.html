@@ -3,78 +3,64 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NightWire Call</title>
+    <title>NightWire | Chat & Call</title>
     <style>
       :root {
-        --bg: #081120;
-        --bg-soft: #101b2c;
-        --panel: rgba(16, 27, 44, 0.9);
-        --panel-strong: #111f32;
-        --card: #0f1c2d;
-        --muted: #94a3b8;
-        --text: #edf6ff;
-        --primary: #5eead4;
-        --primary-strong: #34d399;
-        --secondary: #7c3aed;
-        --accent: #f59e0b;
-        --danger: #f87171;
-        --border: rgba(148, 163, 184, 0.2);
-        --shadow: 0 24px 65px rgba(1, 7, 18, 0.7);
+        --bg: #0b1020;
+        --bg-2: #101827;
+        --panel: #111b2d;
+        --panel-2: #0e1626;
+        --card: #162235;
+        --card-2: #1b2940;
+        --line: rgba(148, 163, 184, 0.18);
+        --line-strong: rgba(148, 163, 184, 0.28);
+        --text: #eef5ff;
+        --muted: #9aa8bc;
+        --soft: #dfe9f8;
+        --green: #3ddc97;
+        --green-soft: rgba(61, 220, 151, 0.18);
+        --blue: #5ca8ff;
+        --purple: #8b5cf6;
+        --pink: #f472b6;
+        --orange: #f9a826;
+        --shadow: 0 28px 80px rgba(1, 4, 12, 0.5);
       }
 
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
         margin: 0;
         font-family: Inter, "Segoe UI", sans-serif;
-        background:
-          radial-gradient(circle at top left, rgba(94, 234, 212, 0.14), transparent 28%),
-          radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.14), transparent 35%),
-          var(--bg);
         color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(92, 168, 255, 0.12), transparent 20%),
+          radial-gradient(circle at bottom right, rgba(139, 92, 246, 0.14), transparent 22%),
+          var(--bg);
       }
 
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      img {
-        max-width: 100%;
-        display: block;
-      }
-
-      button,
-      input {
-        font: inherit;
-      }
+      a { color: inherit; text-decoration: none; }
+      button, input { font: inherit; }
 
       .container {
-        width: min(1180px, calc(100% - 32px));
+        width: min(1260px, calc(100% - 32px));
         margin: 0 auto;
       }
 
-      .site-header {
+      .topbar {
         position: sticky;
         top: 0;
         z-index: 20;
         backdrop-filter: blur(14px);
-        background: rgba(8, 17, 32, 0.72);
-        border-bottom: 1px solid var(--border);
+        background: rgba(11, 16, 32, 0.75);
+        border-bottom: 1px solid var(--line);
       }
 
-      .nav {
+      .topbar-inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 78px;
-        gap: 20px;
+        min-height: 76px;
+        gap: 16px;
       }
 
       .brand {
@@ -91,24 +77,22 @@
         border-radius: 12px;
         display: grid;
         place-items: center;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: #03131a;
-        font-weight: 900;
-        box-shadow: 0 14px 28px rgba(94, 234, 212, 0.25);
+        background: linear-gradient(135deg, var(--blue), var(--purple));
+        box-shadow: 0 16px 28px rgba(92, 168, 255, 0.3);
+        color: white;
       }
 
-      .nav-links {
+      .nav {
         display: flex;
+        align-items: center;
         gap: 28px;
         color: var(--muted);
-        font-size: 0.96rem;
+        font-size: 0.94rem;
       }
 
-      .nav-links a:hover {
-        color: var(--text);
-      }
+      .nav a:hover { color: var(--text); }
 
-      .nav-actions {
+      .actions {
         display: flex;
         align-items: center;
         gap: 12px;
@@ -117,36 +101,35 @@
       .btn {
         border: 0;
         border-radius: 999px;
-        padding: 0.9rem 1.4rem;
-        font-weight: 700;
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        font-weight: 700;
+        transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
       }
 
-      .btn:hover {
-        transform: translateY(-2px);
+      .btn:hover { transform: translateY(-2px); }
+
+      .btn-outline {
+        padding: 0.9rem 1.3rem;
+        background: rgba(255,255,255,0.03);
+        color: var(--text);
+        border: 1px solid var(--line-strong);
       }
 
       .btn-primary {
-        background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-        color: #07141d;
-        box-shadow: 0 16px 32px rgba(52, 211, 153, 0.25);
-      }
-
-      .btn-secondary {
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text);
-        border: 1px solid var(--border);
+        padding: 0.9rem 1.4rem;
+        color: #061119;
+        background: linear-gradient(135deg, #7dd3fc, #a78bfa);
+        box-shadow: 0 16px 34px rgba(96, 165, 250, 0.25);
       }
 
       .hero {
-        padding: 72px 0 28px;
+        padding: 50px 0 24px;
       }
 
-      .hero-grid {
+      .hero-shell {
         display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 40px;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 22px;
         align-items: center;
       }
 
@@ -154,15 +137,15 @@
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        border: 1px solid rgba(94, 234, 212, 0.25);
-        background: rgba(94, 234, 212, 0.05);
-        color: var(--primary);
         border-radius: 999px;
-        padding: 0.5rem 0.8rem;
-        font-size: 0.8rem;
-        font-weight: 700;
-        letter-spacing: 0.06em;
+        padding: 0.48rem 0.75rem;
+        border: 1px solid rgba(125, 211, 252, 0.3);
+        background: rgba(125, 211, 252, 0.08);
+        color: #a5f3fc;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
+        font-size: 0.73rem;
+        font-weight: 800;
       }
 
       .eyebrow::before {
@@ -170,223 +153,325 @@
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: var(--primary);
-        box-shadow: 0 0 18px rgba(94, 234, 212, 0.8);
+        background: #67e8f9;
+        box-shadow: 0 0 16px rgba(103, 232, 249, 0.7);
       }
 
-      h1 {
-        font-size: clamp(2.8rem, 5vw, 5rem);
-        line-height: 0.96;
-        margin: 18px 0 18px;
+      .hero-copy h1 {
+        margin: 18px 0 16px;
         letter-spacing: -0.06em;
+        font-size: clamp(2.7rem, 5vw, 5.2rem);
+        line-height: 0.95;
       }
 
-      .hero p {
+      .hero-copy p {
         color: var(--muted);
         font-size: 1.08rem;
-        line-height: 1.7;
-        max-width: 600px;
+        line-height: 1.72;
+        max-width: 620px;
       }
 
       .hero-actions {
         display: flex;
         flex-wrap: wrap;
         gap: 14px;
-        margin-top: 26px;
+        margin-top: 28px;
       }
 
-      .meta-row {
+      .meta {
         display: flex;
         flex-wrap: wrap;
         gap: 22px;
         margin-top: 26px;
         color: var(--muted);
-        font-size: 0.92rem;
+        font-size: 0.93rem;
       }
 
-      .meta-row strong {
-        color: var(--text);
-      }
+      .meta strong { color: var(--text); }
 
-      .call-panel {
-        background: linear-gradient(180deg, rgba(17, 28, 42, 0.95), rgba(9, 16, 28, 0.98));
-        border: 1px solid var(--border);
+      .app-preview {
+        background: linear-gradient(180deg, rgba(17, 27, 45, 0.95), rgba(9, 14, 25, 0.99));
+        border: 1px solid var(--line);
         border-radius: 28px;
         box-shadow: var(--shadow);
         overflow: hidden;
       }
 
-      .call-header {
+      .app-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 18px 22px;
-        border-bottom: 1px solid var(--border);
+        padding: 18px 18px 12px;
+        border-bottom: 1px solid var(--line);
       }
 
-      .call-header-left {
+      .chat-left {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
       }
 
-      .avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
+      .mini-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
         display: grid;
         place-items: center;
         font-weight: 800;
-        background: linear-gradient(135deg, #f59e0b, #f97316);
-        color: white;
+        background: linear-gradient(135deg, var(--purple), var(--pink));
       }
 
-      .call-title {
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 16px rgba(61, 220, 151, 0.9);
+      }
+
+      .room-box {
+        display: grid;
+        grid-template-columns: 220px 1fr 170px;
+        min-height: 490px;
+      }
+
+      .sidebar {
+        background: rgba(15, 22, 34, 0.96);
+        border-right: 1px solid var(--line);
+        padding: 14px 10px;
+      }
+
+      .server-pill {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(135deg, var(--blue), var(--purple));
+        color: white;
+        border-radius: 14px;
+        font-weight: 800;
+      }
+
+      .channels {
+        margin-top: 12px;
+      }
+
+      .channel-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 12px;
+        margin: 6px 0;
+        border-radius: 12px;
+        color: var(--muted);
+        font-size: 0.93rem;
+        background: rgba(255,255,255,0.01);
+      }
+
+      .channel-item.active {
+        background: rgba(92, 168, 255, 0.12);
+        color: var(--text);
+        border: 1px solid rgba(92, 168, 255, 0.25);
+      }
+
+      .channel-badge {
+        background: rgba(125, 211, 252, 0.15);
+        color: #a5f3fc;
+        border-radius: 999px;
+        padding: 0.18rem 0.48rem;
+        font-size: 0.73rem;
+      }
+
+      .chat-panel {
+        display: flex;
+        flex-direction: column;
+        background: rgba(12, 18, 29, 0.95);
+      }
+
+      .chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .chat-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         font-weight: 700;
       }
 
-      .status-pill {
+      .chat-bubble {
+        flex: 1;
+        padding: 18px 16px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .message-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      .message-row.mine {
+        justify-content: flex-end;
+      }
+
+      .avatar-small {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 0.74rem;
+        font-weight: 700;
+        background: rgba(139, 92, 246, 0.24);
+        border: 1px solid rgba(139, 92, 246, 0.34);
+      }
+
+      .message {
+        max-width: 72%;
+        padding: 0.8rem 0.95rem;
+        border-radius: 16px;
+        line-height: 1.5;
+        font-size: 0.95rem;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.02);
+        color: var(--soft);
+      }
+
+      .message.mine {
+        background: linear-gradient(135deg, rgba(92, 168, 255, 0.32), rgba(96, 165, 250, 0.15));
+        border-color: rgba(92, 168, 255, 0.3);
+      }
+
+      .composer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px 16px;
+        border-top: 1px solid var(--line);
+      }
+
+      .composer input {
+        flex: 1;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.9rem 1rem;
+        color: var(--text);
+        outline: none;
+      }
+
+      .send-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 0;
+        background: linear-gradient(135deg, var(--blue), var(--purple));
+        color: white;
+        cursor: pointer;
+      }
+
+      .call-panel {
+        background: rgba(18, 28, 42, 0.94);
+        border-left: 1px solid var(--line);
+        padding: 16px 14px;
+      }
+
+      .call-card {
+        background: linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(9, 14, 24, 0.9));
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .call-preview {
+        position: relative;
+        min-height: 220px;
+        background:
+          radial-gradient(circle at 50% 25%, rgba(168, 85, 247, 0.24), transparent 22%),
+          linear-gradient(180deg, rgba(12, 18, 29, 0.1), rgba(12, 18, 29, 0.8)),
+          linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(17, 24, 39, 0.95));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .call-user {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, rgba(125, 211, 252, 0.9), rgba(167, 139, 250, 0.9));
+        color: #07131d;
+        box-shadow: 0 18px 42px rgba(96, 165, 250, 0.25);
+      }
+
+      .call-search {
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        padding: 0.32rem 0.7rem;
+        gap: 8px;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(9, 13, 22, 0.75);
+        border: 1px solid var(--line);
         border-radius: 999px;
-        background: rgba(34, 197, 94, 0.12);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        color: #9ae6b4;
-        font-size: 0.76rem;
+        padding: 0.38rem 0.7rem;
+        font-size: 0.74rem;
+        color: var(--muted);
       }
 
-      .status-pill::before {
-        content: "";
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #22c55e;
-        box-shadow: 0 0 12px rgba(34, 197, 94, 0.7);
+      .call-meta {
+        padding: 18px 14px 14px;
       }
 
-      .preview {
-        padding: 22px 22px 10px;
+      .call-name {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin: 0 0 6px;
       }
 
-      .preview-card {
-        position: relative;
-        height: 430px;
-        border-radius: 22px;
-        overflow: hidden;
-        background:
-          linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.35)),
-          linear-gradient(135deg, rgba(124, 58, 237, 0.35), rgba(15, 118, 110, 0.35)),
-          #091827;
-        border: 1px solid rgba(148, 163, 184, 0.18);
-      }
-
-      .preview-bg {
-        position: absolute;
-        inset: 0;
-        background:
-          radial-gradient(circle at 25% 15%, rgba(94, 234, 212, 0.28), transparent 18%),
-          radial-gradient(circle at 72% 28%, rgba(167, 139, 250, 0.42), transparent 20%),
-          linear-gradient(135deg, rgba(11, 10, 16, 0.6), rgba(18, 27, 41, 0.9));
-      }
-
-      .person {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 22px;
-        font-size: 4.5rem;
-        font-weight: 800;
-        color: rgba(255,255,255,0.95);
-        background: rgba(15, 23, 42, 0.5);
-        backdrop-filter: blur(6px);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-      }
-
-      .person.main {
-        width: 58%;
-        height: 72%;
-        left: 50%;
-        top: 15%;
-        transform: translateX(-50%);
-        background: linear-gradient(180deg, rgba(14, 165, 233, 0.3), rgba(15, 23, 42, 0.15));
-      }
-
-      .person.side {
-        right: 20px;
-        bottom: 20px;
-        width: 110px;
-        height: 130px;
-        font-size: 2.4rem;
-      }
-
-      .call-overlay {
-        position: absolute;
-        right: 18px;
-        top: 18px;
-        background: rgba(4, 9, 17, 0.68);
-        border: 1px solid rgba(148, 163, 184, 0.22);
-        color: white;
-        border-radius: 12px;
-        padding: 0.45rem 0.75rem;
-        font-size: 0.8rem;
-      }
-
-      .call-controls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        padding: 14px 20px 24px;
-      }
-
-      .control-btn {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text);
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-      }
-
-      .control-btn:hover {
-        transform: translateY(-2px);
-      }
-
-      .control-btn.active {
-        background: rgba(94, 234, 212, 0.16);
-        border-color: rgba(94, 234, 212, 0.5);
-      }
-
-      .control-btn.danger {
-        background: rgba(248, 113, 113, 0.18);
-        border-color: rgba(248, 113, 113, 0.5);
-      }
-
-      .features {
-        padding: 32px 0 20px;
-      }
-
-      .section-head {
-        max-width: 700px;
-        margin-bottom: 28px;
-      }
-
-      .section-head h2 {
-        font-size: clamp(2rem, 2.7vw, 3rem);
-        letter-spacing: -0.06em;
-        margin: 0 0 12px;
-      }
-
-      .section-head p {
+      .call-sub {
         color: var(--muted);
         margin: 0;
-        line-height: 1.7;
+        font-size: 0.88rem;
+      }
+
+      .call-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 0 12px 16px;
+      }
+
+      .mini-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.02);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .mini-btn.danger {
+        background: rgba(248, 113, 113, 0.15);
+        border-color: rgba(248, 113, 113, 0.28);
+      }
+
+      .feature-row {
+        padding: 36px 0 18px;
       }
 
       .feature-grid {
@@ -396,23 +481,22 @@
       }
 
       .feature-card {
-        background: rgba(15, 27, 44, 0.82);
-        border: 1px solid var(--border);
+        background: rgba(15, 22, 34, 0.92);
+        border: 1px solid var(--line);
         border-radius: 22px;
-        padding: 22px;
-        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+        padding: 22px 20px;
       }
 
       .feature-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 14px;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
         display: grid;
         place-items: center;
-        font-size: 1.4rem;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, rgba(92,168,255,0.18), rgba(139,92,246,0.18));
+        border: 1px solid rgba(92,168,255,0.2);
         margin-bottom: 18px;
-        background: linear-gradient(135deg, rgba(94, 234, 212, 0.18), rgba(124, 58, 237, 0.18));
-        border: 1px solid rgba(94, 234, 212, 0.22);
       }
 
       .feature-card h3 {
@@ -426,35 +510,8 @@
         color: var(--muted);
       }
 
-      .stats {
-        padding: 40px 0 24px;
-      }
-
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
-      }
-
-      .stat-box {
-        border: 1px solid var(--border);
-        background: rgba(15, 27, 44, 0.8);
-        border-radius: 20px;
-        padding: 24px 20px;
-      }
-
-      .stat-box strong {
-        display: block;
-        font-size: clamp(1.8rem, 2vw, 2.6rem);
-        letter-spacing: -0.06em;
-      }
-
-      .stat-box span {
-        color: var(--muted);
-      }
-
-      .bottom-cta {
-        padding: 52px 0 90px;
+      .cta {
+        padding: 42px 0 80px;
       }
 
       .cta-box {
@@ -462,16 +519,16 @@
         align-items: center;
         justify-content: space-between;
         gap: 18px;
-        border: 1px solid var(--border);
-        border-radius: 26px;
-        background: linear-gradient(135deg, rgba(94, 234, 212, 0.08), rgba(124, 58, 237, 0.08));
         padding: 28px 30px;
+        border-radius: 26px;
+        border: 1px solid var(--line);
+        background: linear-gradient(135deg, rgba(92,168,255,0.08), rgba(139,92,246,0.08));
       }
 
-      .cta-box h3 {
-        margin: 0 0 6px;
-        font-size: clamp(1.7rem, 2vw, 2.4rem);
+      .cta-box h2 {
+        margin: 0 0 8px;
         letter-spacing: -0.04em;
+        font-size: clamp(1.7rem, 2.6vw, 2.6rem);
       }
 
       .cta-box p {
@@ -479,29 +536,32 @@
         color: var(--muted);
       }
 
-      .site-footer {
-        padding: 0 0 36px;
+      .footer {
+        border-top: 1px solid var(--line);
         color: var(--muted);
-        border-top: 1px solid var(--border);
       }
 
-      .footer-bar {
+      .footer-inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        padding-top: 20px;
+        padding: 20px 0 34px;
         font-size: 0.92rem;
       }
 
-      @media (max-width: 920px) {
-        .hero-grid,
-        .feature-grid,
-        .stats-grid {
+      @media (max-width: 980px) {
+        .hero-shell,
+        .feature-grid {
           grid-template-columns: 1fr;
         }
 
-        .nav-links {
+        .room-box {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar,
+        .call-panel {
           display: none;
         }
 
@@ -511,51 +571,42 @@
         }
       }
 
-      @media (max-width: 560px) {
+      @media (max-width: 640px) {
         .nav {
-          min-height: 70px;
-        }
-
-        .nav-actions .btn-secondary {
           display: none;
         }
 
-        .hero {
-          padding-top: 40px;
+        .actions .btn-outline {
+          display: none;
         }
 
-        .call-controls {
-          gap: 8px;
+        .chat-bubble {
+          padding: 14px 12px 10px;
         }
 
-        .control-btn {
-          width: 46px;
-          height: 46px;
-        }
-
-        .preview-card {
-          height: 340px;
+        .message {
+          max-width: 82%;
         }
       }
     </style>
   </head>
   <body>
-    <header class="site-header">
-      <div class="container nav">
-        <a href="#" class="brand" aria-label="NightWire home">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">
           <span class="brand-mark">N</span>
           <span>NightWire</span>
-        </a>
+        </div>
 
-        <nav class="nav-links" aria-label="Main navigation">
+        <nav class="nav" aria-label="Main navigation">
           <a href="#features">Features</a>
-          <a href="#solutions">Solutions</a>
+          <a href="#chat">Chat</a>
+          <a href="#calls">Calls</a>
           <a href="#pricing">Pricing</a>
-          <a href="#support">Support</a>
         </nav>
 
-        <div class="nav-actions">
-          <button class="btn btn-secondary">Log in</button>
+        <div class="actions">
+          <button class="btn btn-outline">Log in</button>
           <button class="btn btn-primary">Start free</button>
         </div>
       </div>
@@ -563,118 +614,138 @@
 
     <main>
       <section class="hero">
-        <div class="container hero-grid">
-          <div>
-            <span class="eyebrow">Crystal-clear calling</span>
-            <h1>Talk, share, and close deals faster.</h1>
+        <div class="container hero-shell">
+          <div class="hero-copy">
+            <span class="eyebrow">Chat + voice + video</span>
+            <h1>Keep your team connected in real time.</h1>
             <p>
-              Build stronger customer relationships with secure HD voice, face-to-face video,
-              and quick team collaboration from any device.
+              NightWire brings together direct messages, community channels, and crystal-clear calling in one fast, friendly workspace built for modern teams.
             </p>
 
             <div class="hero-actions">
-              <button class="btn btn-primary" id="startCallBtn">Start a call</button>
-              <button class="btn btn-secondary">Book demo</button>
+              <button class="btn btn-primary">Start a call</button>
+              <button class="btn btn-outline">Watch demo</button>
             </div>
 
-            <div class="meta-row">
-              <div><strong>12k+</strong> teams online</div>
+            <div class="meta">
+              <div><strong>18k+</strong> active teams</div>
               <div><strong>99.9%</strong> uptime</div>
-              <div><strong>4.9/5</strong> customer rating</div>
+              <div><strong>4.9/5</strong> satisfaction</div>
             </div>
           </div>
 
-          <div class="call-panel" aria-label="Call preview panel">
-            <div class="call-header">
-              <div class="call-header-left">
-                <div class="avatar">A</div>
+          <div class="app-preview" id="chat" aria-label="NightWire chat application preview">
+            <div class="app-header">
+              <div class="chat-left">
+                <div class="mini-avatar">N</div>
                 <div>
-                  <div class="call-title">Ava Morgan</div>
-                  <small style="color: var(--muted);">Sales follow-up</small>
+                  <div style="font-weight: 700;">NightWire HQ</div>
+                  <small style="color: var(--muted);">3 online</small>
                 </div>
               </div>
-              <span class="status-pill">Live</span>
+              <div class="status-dot" title="online"></div>
             </div>
 
-            <div class="preview">
-              <div class="preview-card">
-                <div class="preview-bg"></div>
-                <div class="call-overlay">HD video • 12:48</div>
-                <div class="person main">A</div>
-                <div class="person side">J</div>
+            <div class="room-box">
+              <aside class="sidebar">
+                <div class="server-pill">N</div>
+
+                <div class="channels">
+                  <div class="channel-item active">
+                    <span># general</span>
+                    <span class="channel-badge">24</span>
+                  </div>
+                  <div class="channel-item"><span># sales</span></div>
+                  <div class="channel-item"><span># design</span></div>
+                  <div class="channel-item"><span># support</span></div>
+                  <div class="channel-item"><span># launch</span></div>
+                </div>
+              </aside>
+
+              <div class="chat-panel">
+                <div class="chat-header">
+                  <div class="chat-title">
+                    <span># general</span>
+                  </div>
+                  <button class="btn btn-outline" style="padding: 0.55rem 0.9rem; font-size: 0.8rem;">Invite</button>
+                </div>
+
+                <div class="chat-bubble">
+                  <div class="message-row">
+                    <div class="avatar-small">L</div>
+                    <div class="message">Morning team — the demo is live and the onboarding flow is ready.</div>
+                  </div>
+
+                  <div class="message-row mine">
+                    <div class="message mine">Amazing. I just wrapped the call handoff flow and it feels smooth.</div>
+                  </div>
+
+                  <div class="message-row">
+                    <div class="avatar-small">M</div>
+                    <div class="message">Perfect. I’ll join in 5 minutes for the call review and share the notes.</div>
+                  </div>
+                </div>
+
+                <div class="composer">
+                  <input type="text" value="Type a message..." aria-label="Message input" />
+                  <button class="send-btn" aria-label="Send message">➤</button>
+                </div>
               </div>
-            </div>
 
-            <div class="call-controls">
-              <button class="control-btn active" aria-label="Mute">🎙️</button>
-              <button class="control-btn active" aria-label="Camera">📹</button>
-              <button class="control-btn" aria-label="Share screen">🖥️</button>
-              <button class="control-btn danger" aria-label="End call">📞</button>
+              <aside class="call-panel" id="calls">
+                <div class="call-card">
+                  <div class="call-preview">
+                    <div class="call-search">● Live</div>
+                    <div class="call-user">A</div>
+                  </div>
+
+                  <div class="call-meta">
+                    <p class="call-name">Ava Martin</p>
+                    <p class="call-sub">Product discovery • 12:48</p>
+                  </div>
+
+                  <div class="call-actions">
+                    <button class="mini-btn" aria-label="Mute">🎙️</button>
+                    <button class="mini-btn" aria-label="Camera">📹</button>
+                    <button class="mini-btn danger" aria-label="End call">📞</button>
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="features" id="features">
+      <section class="feature-row" id="features">
         <div class="container">
-          <div class="section-head">
-            <h2>Everything your team needs to connect instantly.</h2>
-            <p>
-              Designed for service teams, sales leaders, and support desks that need a call experience that feels premium and runs smoothly everywhere.
-            </p>
-          </div>
-
           <div class="feature-grid">
             <article class="feature-card">
-              <div class="feature-icon">📞</div>
-              <h3>Instant voice calls</h3>
-              <p>Launch one-to-one or group calls in seconds with low-latency HD audio and instant call controls.</p>
+              <div class="feature-icon">💬</div>
+              <h3>Group chats</h3>
+              <p>Keep projects moving with organized channels, quick replies, and threaded conversations that never get lost.</p>
             </article>
 
             <article class="feature-card">
-              <div class="feature-icon">🎥</div>
-              <h3>Video meetings</h3>
-              <p>Host polished meetings with screen sharing, profile overlays, and smart camera switching for every participant.</p>
+              <div class="feature-icon">🎧</div>
+              <h3>Voice & video</h3>
+              <p>Jump from chat to HD voice or video instantly with low-latency calling built for fast-moving teams.</p>
             </article>
 
             <article class="feature-card">
               <div class="feature-icon">🔒</div>
-              <h3>Secure by default</h3>
-              <p>Keep conversations private with encrypted calls, access controls, and compliance-friendly team permissions.</p>
+              <h3>Secure teamwork</h3>
+              <p>Protect every conversation with encrypted calls, role-based access, and modern workspace controls.</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="stats" id="solutions">
-        <div class="container">
-          <div class="stats-grid">
-            <div class="stat-box">
-              <strong>2.8M</strong>
-              <span>calls completed each month</span>
-            </div>
-            <div class="stat-box">
-              <strong>43%</strong>
-              <span>faster response times</span>
-            </div>
-            <div class="stat-box">
-              <strong>89%</strong>
-              <span>customer satisfaction lift</span>
-            </div>
-            <div class="stat-box">
-              <strong>18ms</strong>
-              <span>global latency average</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="bottom-cta" id="pricing">
+      <section class="cta" id="pricing">
         <div class="container">
           <div class="cta-box">
             <div>
-              <h3>Ready to turn every conversation into a conversion?</h3>
-              <p>Launch your next call experience with NightWire today.</p>
+              <h2>Designed for fast teams. Built for happier conversations.</h2>
+              <p>Launch smarter communication across your workspace today.</p>
             </div>
             <button class="btn btn-primary">Get started</button>
           </div>
@@ -682,39 +753,11 @@
       </section>
     </main>
 
-    <footer class="site-footer" id="support">
-      <div class="container footer-bar">
+    <footer class="footer">
+      <div class="container footer-inner">
         <div>© 2026 NightWire</div>
         <div>hello@nightwire.com</div>
       </div>
     </footer>
-
-    <script>
-      const startCallBtn = document.getElementById('startCallBtn');
-      const statusPill = document.querySelector('.status-pill');
-      const controlButtons = document.querySelectorAll('.control-btn');
-
-      startCallBtn.addEventListener('click', () => {
-        const isLive = statusPill.textContent.trim() === 'Live';
-        statusPill.textContent = isLive ? 'Connecting...' : 'Live';
-        statusPill.style.background = isLive ? 'rgba(245, 158, 11, 0.12)' : 'rgba(34, 197, 94, 0.12)';
-        statusPill.style.borderColor = isLive ? 'rgba(245, 158, 11, 0.35)' : 'rgba(34, 197, 94, 0.3)';
-        statusPill.style.color = isLive ? '#fcd34d' : '#9ae6b4';
-      });
-
-      controlButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          if (button.classList.contains('danger')) {
-            statusPill.textContent = 'Ended';
-            statusPill.style.background = 'rgba(248, 113, 113, 0.12)';
-            statusPill.style.borderColor = 'rgba(248, 113, 113, 0.3)';
-            statusPill.style.color = '#fca5a5';
-            return;
-          }
-
-          button.classList.toggle('active');
-        });
-      });
-    </script>
   </body>
 </html>
